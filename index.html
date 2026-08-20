@@ -104,28 +104,66 @@ main{max-width:1180px; margin:0 auto; padding:22px 18px calc(60px + env(safe-are
 @keyframes fadein{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
 
 /* ---------- HOME / BRAIN ---------- */
-.home-hero{text-align:center; padding:20px 0 10px;}
+.home-stage{position:relative;}
+.home-hero{text-align:center; padding:20px 0 10px; position:relative; z-index:2;}
 .greeting{font-size:15px; color:var(--text-muted); letter-spacing:1px; text-transform:uppercase;}
 .greeting b{color:var(--orange-bright);}
 .clock{font-size:13px; color:var(--text-muted); margin-top:2px;}
 
 .brain-wrap{
-  position:relative; width:260px; height:260px; margin:26px auto 8px;
+  position:relative; width:300px; height:300px; margin:26px auto 8px;
   display:flex; align-items:center; justify-content:center;
+  perspective:700px;
 }
+.orb-rotator{position:absolute; inset:0; animation:spin 46s linear infinite;}
 .ring{
-  position:absolute; border-radius:50%;
+  position:absolute; top:0; left:0; border-radius:50%;
   border:1px solid var(--border-orange);
 }
 .ring1{width:100%; height:100%; animation:spin 18s linear infinite; border-style:dashed;}
-.ring2{width:78%; height:78%; animation:spin 12s linear infinite reverse; border-color:rgba(255,122,26,0.5);}
-.ring3{width:56%; height:56%; animation:spin 9s linear infinite; border-color:rgba(255,176,102,0.6);}
-.core{
-  position:absolute; width:34%; height:34%; border-radius:50%;
-  background:radial-gradient(circle at 35% 30%, var(--orange-bright), var(--orange) 55%, var(--orange-deep) 100%);
-  box-shadow:0 0 40px 8px var(--orange-dim), 0 0 90px 20px rgba(255,122,26,0.12);
-  animation:corepulse 3s ease-in-out infinite;
+.ring2{width:78%; height:78%; top:11%; left:11%; animation:spin 12s linear infinite reverse; border-color:rgba(255,122,26,0.5);}
+.ring3{width:56%; height:56%; top:22%; left:22%; animation:spin 9s linear infinite; border-color:rgba(255,176,102,0.6);}
+.ring-tilt{
+  position:absolute; top:50%; left:50%; width:88%; height:88%; margin:-44% 0 0 -44%;
+  border-radius:50%; border:1px solid rgba(255,176,102,.4); transform-style:preserve-3d;
 }
+.rt1{transform:rotateX(72deg) rotate(0deg); animation:spin 15s linear infinite;}
+.rt2{width:66%; height:66%; margin:-33% 0 0 -33%; border-color:rgba(255,122,26,.55); transform:rotateX(72deg) rotate(90deg); animation:spin 11s linear infinite reverse;}
+.bolt{
+  position:absolute; top:50%; left:50%; width:9px; height:44%;
+  background:linear-gradient(180deg, var(--orange-bright), var(--orange) 55%, transparent);
+  transform-origin:top center; filter:drop-shadow(0 0 7px var(--orange));
+  clip-path:polygon(50% 0%,66% 26%,52% 30%,70% 58%,46% 55%,60% 100%,32% 52%,50% 50%,26% 22%,46% 26%);
+  animation:boltflicker 2.6s ease-in-out infinite;
+}
+.b1{transform:translate(-50%,-100%) rotate(20deg);}
+.b2{transform:translate(-50%,-100%) rotate(120deg); animation-delay:.55s;}
+.b3{transform:translate(-50%,-100%) rotate(205deg); animation-delay:1.1s;}
+.b4{transform:translate(-50%,-100%) rotate(295deg); animation-delay:1.65s;}
+@keyframes boltflicker{0%,100%{opacity:.12;}45%{opacity:.95;}55%{opacity:.3;}}
+.orbit-particles{position:absolute; inset:0;}
+.particle{
+  position:absolute; top:50%; left:50%; width:5px; height:5px; margin:-2.5px 0 0 -2.5px; border-radius:50%;
+  background:var(--orange-bright); box-shadow:0 0 9px 2px var(--orange); animation:orbit linear infinite;
+}
+.p1{animation-duration:7s; --r:118px;}
+.p2{animation-duration:10s; animation-direction:reverse; --r:148px;}
+.p3{animation-duration:5.5s; animation-delay:-2s; --r:96px;}
+.p4{animation-duration:12s; animation-direction:reverse; animation-delay:-4s; --r:150px;}
+@keyframes orbit{from{transform:rotate(0deg) translateX(var(--r)) rotate(0deg);}to{transform:rotate(360deg) translateX(var(--r)) rotate(-360deg);}}
+.atom-core{
+  position:absolute; width:46%; height:46%; z-index:1;
+  animation:corepulse 3s ease-in-out infinite;
+  filter:drop-shadow(0 0 12px rgba(255,122,26,0.28));
+}
+.atom-core svg{width:100%; height:100%; display:block; overflow:visible;}
+.atom-ring-g{animation:spin 26s linear infinite; transform-origin:70px 70px;}
+.atom-bond{stroke:var(--orange); stroke-opacity:.5; stroke-width:1.6; fill:none; stroke-dasharray:4 3; animation:bonddash 3s linear infinite;}
+.atom-spoke{stroke:var(--orange-bright); stroke-opacity:.32; stroke-width:1.2; fill:none;}
+.atom-node-glow{fill:var(--orange); opacity:.3;}
+.atom-node-core{fill:var(--orange-bright);}
+.atom-node.center .atom-node-core{fill:var(--orange-bright);}
+@keyframes bonddash{to{stroke-dashoffset:-14;}}
 @keyframes corepulse{0%,100%{transform:scale(1); filter:brightness(1);}50%{transform:scale(1.07); filter:brightness(1.25);}}
 @keyframes spin{from{transform:rotate(0deg);}to{transform:rotate(360deg);}}
 .node{
@@ -142,16 +180,47 @@ main{max-width:1180px; margin:0 auto; padding:22px 18px calc(60px + env(safe-are
 .overview-grid{
   display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; margin-top:10px;
 }
+.ov-slot{display:block;}
 .ov-card{
   background:linear-gradient(180deg,var(--bg3),var(--bg2));
-  border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px;
-  cursor:pointer; transition:.15s; position:relative; overflow:hidden;
+  border:1px solid var(--border); border-left:3px solid var(--accent, var(--orange));
+  border-radius:var(--radius); padding:16px 18px 30px;
+  cursor:pointer; transition:border-color .15s, box-shadow .15s; position:relative; overflow:hidden; height:100%;
 }
-.ov-card:hover{border-color:var(--border-orange); transform:translateY(-2px); box-shadow:0 10px 26px -14px rgba(255,122,26,0.35);}
+.ov-card:hover{border-color:var(--border-orange); border-left-color:var(--accent, var(--orange)); box-shadow:0 10px 26px -14px rgba(255,122,26,0.35);}
+.ov-card .ov-icon-badge{
+  width:32px; height:32px; border-radius:9px; background:rgba(255,255,255,0.06);
+  display:flex; align-items:center; justify-content:center; font-size:15px; font-weight:800;
+  color:var(--accent, var(--orange-bright)); box-shadow:0 0 14px -3px var(--accent, var(--orange)); margin-bottom:10px;
+}
 .ov-card .ov-title{font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); font-weight:700;}
-.ov-card .ov-big{font-size:26px; font-weight:800; margin-top:8px;}
+.ov-card .ov-big{font-size:24px; font-weight:800; margin-top:7px;}
 .ov-card .ov-sub{font-size:12.5px; color:var(--text-secondary); margin-top:4px;}
-.ov-card .ov-icon{position:absolute; right:14px; top:14px; font-size:20px; opacity:.5;}
+.ov-card .ov-arrow{position:absolute; right:14px; bottom:10px; font-size:13px; color:var(--text-muted); opacity:.5; transition:.15s;}
+.ov-card:hover .ov-arrow{opacity:1; color:var(--orange-bright); transform:translateX(2px);}
+
+@media(min-width:980px){
+  .home-stage{min-height:660px;}
+  .home-hero{position:absolute; top:0; left:50%; transform:translateX(-50%); width:360px;}
+  .overview-grid{display:block; position:static; margin:0; height:100%;}
+  .ov-slot{position:absolute; width:225px;}
+  .ov-slot[data-pos="1"]{left:0; top:2%;}
+  .ov-slot[data-pos="2"]{right:0; top:8%;}
+  .ov-slot[data-pos="3"]{left:-1%; top:56%;}
+  .ov-slot[data-pos="4"]{right:-1%; top:62%;}
+  .ov-slot[data-pos="5"]{left:50%; top:90%; transform:translateX(-50%);}
+  .ov-slot[data-pos="1"] .ov-card{animation:floatA 7s ease-in-out infinite;}
+  .ov-slot[data-pos="2"] .ov-card{animation:floatB 7.6s ease-in-out infinite .5s;}
+  .ov-slot[data-pos="3"] .ov-card{animation:floatC 6.6s ease-in-out infinite 1s;}
+  .ov-slot[data-pos="4"] .ov-card{animation:floatD 8s ease-in-out infinite 1.5s;}
+  .ov-slot[data-pos="5"] .ov-card{animation:floatE 7.2s ease-in-out infinite 2s;}
+  .ov-card:hover{animation-play-state:paused; transform:translateY(-4px) rotate(0deg) !important;}
+}
+@keyframes floatA{0%,100%{transform:rotate(-2deg) translateY(0);}50%{transform:rotate(-2deg) translateY(-8px);}}
+@keyframes floatB{0%,100%{transform:rotate(2deg) translateY(0);}50%{transform:rotate(2deg) translateY(-8px);}}
+@keyframes floatC{0%,100%{transform:rotate(1.5deg) translateY(0);}50%{transform:rotate(1.5deg) translateY(-7px);}}
+@keyframes floatD{0%,100%{transform:rotate(-1.5deg) translateY(0);}50%{transform:rotate(-1.5deg) translateY(-7px);}}
+@keyframes floatE{0%,100%{transform:translateY(0);}50%{transform:translateY(-6px);}}
 
 /* ---------- SHARED ---------- */
 h1.page-title{font-size:22px; font-weight:800; letter-spacing:.5px; margin:0 0 4px;}
@@ -282,6 +351,18 @@ table.data-table tr:hover td{background:rgba(255,122,26,0.04);}
 
 .footer-note{text-align:center; color:var(--text-muted); font-size:11.5px; margin-top:40px; padding-top:16px; border-top:1px solid var(--border);}
 
+.brief-updated{font-size:12px; color:var(--text-muted); margin-bottom:18px;}
+.brief-item{padding:12px 0; border-top:1px solid var(--border); display:flex; gap:12px;}
+.brief-item:first-child{border-top:none; padding-top:0;}
+.brief-num{color:var(--text-muted); font-size:12.5px; min-width:16px; padding-top:1px;}
+.brief-body{flex:1;}
+.brief-title{margin:0 0 4px; font-size:14.5px; font-weight:700;}
+.brief-title a{color:var(--orange-bright); text-decoration:none;}
+.brief-title a:hover{text-decoration:underline;}
+.brief-sentence{margin:0; font-size:13px; line-height:1.5; color:var(--text-secondary);}
+.brief-sentence a{color:var(--text-muted); text-decoration:underline;}
+.brief-sentence a:hover{color:var(--orange-bright);}
+
 @media (max-width:640px){
   .brand{font-size:13px;}
   .tabs{order:3; width:100%; justify-content:space-between; margin-top:8px;}
@@ -300,6 +381,8 @@ table.data-table tr:hover td{background:rgba(255,122,26,0.04);}
     <button class="tab-btn" data-tab="finance">Finance</button>
     <button class="tab-btn" data-tab="health">Health</button>
     <button class="tab-btn" data-tab="tasks">Tasks &amp; Learning</button>
+    <button class="tab-btn" data-tab="plan">5-Year Plan</button>
+    <button class="tab-btn" data-tab="briefing">Briefing</button>
   </div>
   <div class="topbar-right">
     <button class="icon-btn" id="exportBtn">Export data</button>
@@ -312,20 +395,57 @@ table.data-table tr:hover td{background:rgba(255,122,26,0.04);}
 
   <!-- ============ HOME ============ -->
   <section class="panel active" id="tab-home">
-    <div class="home-hero">
-      <div class="greeting" id="greetingText">GOOD MORNING, <b>WESLEY</b></div>
-      <div class="clock" id="clockText"></div>
-      <div class="brain-wrap" id="brainWrap">
-        <div class="ring ring1"></div>
-        <div class="ring ring2"></div>
-        <div class="ring ring3"></div>
-        <div class="core"></div>
+    <div class="home-stage">
+      <div class="home-hero">
+        <div class="greeting" id="greetingText">GOOD MORNING, <b>WESLEY</b></div>
+        <div class="clock" id="clockText"></div>
+        <div class="brain-wrap" id="brainWrap">
+          <div class="orb-rotator">
+            <div class="ring ring1"></div>
+            <div class="ring ring2"></div>
+            <div class="ring ring3"></div>
+            <div class="ring-tilt rt1"></div>
+            <div class="ring-tilt rt2"></div>
+            <div class="bolt b1"></div>
+            <div class="bolt b2"></div>
+            <div class="bolt b3"></div>
+            <div class="bolt b4"></div>
+          </div>
+          <div class="orbit-particles">
+            <span class="particle p1"></span>
+            <span class="particle p2"></span>
+            <span class="particle p3"></span>
+            <span class="particle p4"></span>
+          </div>
+          <div class="atom-core">
+            <svg viewBox="0 0 140 140">
+              <g class="atom-ring-g">
+                <line class="atom-bond" x1="70" y1="24" x2="109.8" y2="47"></line>
+                <line class="atom-bond" x1="109.8" y1="47" x2="109.8" y2="93"></line>
+                <line class="atom-bond" x1="109.8" y1="93" x2="70" y2="116"></line>
+                <line class="atom-bond" x1="70" y1="116" x2="30.2" y2="93"></line>
+                <line class="atom-bond" x1="30.2" y1="93" x2="30.2" y2="47"></line>
+                <line class="atom-bond" x1="30.2" y1="47" x2="70" y2="24"></line>
+                <line class="atom-spoke" x1="70" y1="70" x2="70" y2="24"></line>
+                <line class="atom-spoke" x1="70" y1="70" x2="109.8" y2="93"></line>
+                <line class="atom-spoke" x1="70" y1="70" x2="30.2" y2="93"></line>
+                <g class="atom-node" transform="translate(70,24)"><circle class="atom-node-glow" r="9"></circle><circle class="atom-node-core" r="4"></circle></g>
+                <g class="atom-node" transform="translate(109.8,47)"><circle class="atom-node-glow" r="9"></circle><circle class="atom-node-core" r="4"></circle></g>
+                <g class="atom-node" transform="translate(109.8,93)"><circle class="atom-node-glow" r="9"></circle><circle class="atom-node-core" r="4"></circle></g>
+                <g class="atom-node" transform="translate(70,116)"><circle class="atom-node-glow" r="9"></circle><circle class="atom-node-core" r="4"></circle></g>
+                <g class="atom-node" transform="translate(30.2,93)"><circle class="atom-node-glow" r="9"></circle><circle class="atom-node-core" r="4"></circle></g>
+                <g class="atom-node" transform="translate(30.2,47)"><circle class="atom-node-glow" r="9"></circle><circle class="atom-node-core" r="4"></circle></g>
+                <g class="atom-node center" transform="translate(70,70)"><circle class="atom-node-glow" r="11"></circle><circle class="atom-node-core" r="5.5"></circle></g>
+              </g>
+            </svg>
+          </div>
+        </div>
+        <div class="brain-status" id="brainStatus">SYSTEMS NOMINAL</div>
+        <div class="brain-line">Everything you're tracking — money, body, time and mind — in one place. Neon-orange, always-on, fully yours.</div>
       </div>
-      <div class="brain-status" id="brainStatus">SYSTEMS NOMINAL</div>
-      <div class="brain-line">Everything you're tracking — money, body, time and mind — in one place. Neon-orange, always-on, fully yours.</div>
-    </div>
 
-    <div class="overview-grid" id="overviewGrid"></div>
+      <div class="overview-grid" id="overviewGrid"></div>
+    </div>
   </section>
 
   <!-- ============ FINANCE ============ -->
@@ -335,39 +455,38 @@ table.data-table tr:hover td{background:rgba(255,122,26,0.04);}
 
     <div class="stat-row" id="financeStats"></div>
 
-    <div class="grid2">
-      <div class="card">
-        <h3>Net Worth Trend</h3>
-        <div class="chart-box"><div id="chartNetWorth" class="svg-chart"></div></div>
-      </div>
-      <div class="card">
-        <h3>Income vs Outgoings <span class="sm">(this month)</span></h3>
-        <div class="chart-box"><div id="chartIncomeOut" class="svg-chart"></div></div>
-      </div>
+    <div class="card">
+      <h3>Income vs Outgoings <span class="sm">(last 6 months)</span></h3>
+      <div class="chart-box"><div id="chartIncomeOut" class="svg-chart"></div></div>
     </div>
 
-    <div class="card">
-      <h3>Add Transaction / Update Net Worth</h3>
-      <form class="inline-form" id="txnForm">
-        <div class="field"><label>Type</label>
-          <select id="txnType"><option value="income">Income</option><option value="expense">Expense</option></select>
-        </div>
-        <div class="field"><label>Category</label>
-          <input id="txnCategory" placeholder="e.g. Rent, Salary" list="catList">
-          <datalist id="catList"></datalist>
-        </div>
-        <div class="field grow"><label>Description</label><input id="txnDesc" placeholder="optional"></div>
-        <div class="field"><label>Amount (£)</label><input id="txnAmount" type="number" step="0.01" placeholder="0.00"></div>
-        <div class="field"><label>Date</label><input id="txnDate" type="date"></div>
-        <button type="submit" class="btn">Add</button>
-      </form>
-      <form class="inline-form" id="netWorthForm">
-        <div class="field"><label>Net worth snapshot (£)</label><input id="nwAmount" type="number" step="0.01" placeholder="e.g. 24500"></div>
-        <div class="field"><label>Date</label><input id="nwDate" type="date"></div>
-        <button type="submit" class="btn ghost">Log net worth</button>
-        <button type="button" class="btn ghost" id="useCalcBtn">Use calculated total</button>
-      </form>
-      <table class="data-table" id="txnTable"><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th>Amount</th><th></th></tr></thead><tbody></tbody></table>
+    <div class="grid2">
+      <div class="card">
+        <h3>Income <span class="sm">— monthly recurring pay</span></h3>
+        <form class="inline-form" id="incomeForm">
+          <div class="field grow"><label>Name</label><input id="incName" placeholder="e.g. Navy salary, BTL1 rental income"></div>
+          <div class="field"><label>Monthly (£)</label><input id="incAmount" type="number" step="0.01"></div>
+          <div class="field"><label>Category</label>
+            <select id="incCategory"><option>Salary</option><option>Rental</option><option>Freelance</option><option>Pension</option><option>Benefits</option><option>Other</option></select>
+          </div>
+          <button type="submit" class="btn">Add</button>
+        </form>
+        <div class="chart-box"><div id="chartIncomeAlloc" class="svg-chart"></div></div>
+        <table class="data-table" id="incomeTable"><thead><tr><th>Name</th><th>Category</th><th>Monthly</th><th></th></tr></thead><tbody></tbody></table>
+      </div>
+      <div class="card">
+        <h3>Expenses <span class="sm">— monthly recurring costs</span></h3>
+        <form class="inline-form" id="expenseForm">
+          <div class="field grow"><label>Name</label><input id="expName" placeholder="e.g. Rent, Groceries"></div>
+          <div class="field"><label>Monthly (£)</label><input id="expAmount" type="number" step="0.01"></div>
+          <div class="field"><label>Category</label>
+            <select id="expCategory"><option>Housing</option><option>Utilities</option><option>Groceries</option><option>Transport</option><option>Subscriptions</option><option>Insurance</option><option>Debt repayment</option><option>Other</option></select>
+          </div>
+          <button type="submit" class="btn">Add</button>
+        </form>
+        <div class="chart-box"><div id="chartExpenseAlloc" class="svg-chart"></div></div>
+        <table class="data-table" id="expenseTable"><thead><tr><th>Name</th><th>Category</th><th>Monthly</th><th></th></tr></thead><tbody></tbody></table>
+      </div>
     </div>
 
     <div class="grid2">
@@ -386,29 +505,39 @@ table.data-table tr:hover td{background:rgba(255,122,26,0.04);}
         <table class="data-table" id="investTable"><thead><tr><th>Name</th><th>Type</th><th>Value</th><th>Monthly</th><th></th></tr></thead><tbody></tbody></table>
       </div>
       <div class="card">
-        <h3>Expenses <span class="sm">— monthly recurring costs</span></h3>
-        <form class="inline-form" id="expenseForm">
-          <div class="field grow"><label>Name</label><input id="expName" placeholder="e.g. Rent, Groceries"></div>
-          <div class="field"><label>Monthly (£)</label><input id="expAmount" type="number" step="0.01"></div>
-          <div class="field"><label>Category</label>
-            <select id="expCategory"><option>Housing</option><option>Utilities</option><option>Groceries</option><option>Transport</option><option>Subscriptions</option><option>Insurance</option><option>Debt repayment</option><option>Other</option></select>
-          </div>
-          <button type="submit" class="btn">Add</button>
+        <h3>Debts &amp; Liabilities</h3>
+        <form class="inline-form" id="debtForm">
+          <div class="field grow"><label>Name</label><input id="debtName" placeholder="e.g. Amex Gold"></div>
+          <div class="field"><label>Amount owed (£)</label><input id="debtAmount" type="number" step="0.01"></div>
+          <div class="field grow"><label>Note</label><input id="debtNote" placeholder="optional"></div>
+          <button type="submit" class="btn ghost">Add debt</button>
         </form>
-        <div class="chart-box"><div id="chartExpenseAlloc" class="svg-chart"></div></div>
-        <table class="data-table" id="expenseTable"><thead><tr><th>Name</th><th>Category</th><th>Monthly</th><th></th></tr></thead><tbody></tbody></table>
+        <table class="data-table" id="debtTable"><thead><tr><th>Name</th><th>Amount</th><th>Note</th><th></th></tr></thead><tbody></tbody></table>
       </div>
     </div>
 
     <div class="card">
-      <h3>Debts &amp; Liabilities</h3>
-      <form class="inline-form" id="debtForm">
-        <div class="field grow"><label>Name</label><input id="debtName" placeholder="e.g. Amex Gold"></div>
-        <div class="field"><label>Amount owed (£)</label><input id="debtAmount" type="number" step="0.01"></div>
-        <div class="field grow"><label>Note</label><input id="debtNote" placeholder="optional"></div>
-        <button type="submit" class="btn ghost">Add debt</button>
+      <h3>One-off Transactions &amp; Net Worth Snapshot <span class="sm">— bonuses, one-time costs, manual net worth logs</span></h3>
+      <form class="inline-form" id="txnForm">
+        <div class="field"><label>Type</label>
+          <select id="txnType"><option value="income">Income</option><option value="expense">Expense</option></select>
+        </div>
+        <div class="field"><label>Category</label>
+          <input id="txnCategory" placeholder="e.g. Bonus, Gift" list="catList">
+          <datalist id="catList"></datalist>
+        </div>
+        <div class="field grow"><label>Description</label><input id="txnDesc" placeholder="optional"></div>
+        <div class="field"><label>Amount (£)</label><input id="txnAmount" type="number" step="0.01" placeholder="0.00"></div>
+        <div class="field"><label>Date</label><input id="txnDate" type="date"></div>
+        <button type="submit" class="btn">Add</button>
       </form>
-      <table class="data-table" id="debtTable"><thead><tr><th>Name</th><th>Amount</th><th>Note</th><th></th></tr></thead><tbody></tbody></table>
+      <form class="inline-form" id="netWorthForm">
+        <div class="field"><label>Net worth snapshot (£)</label><input id="nwAmount" type="number" step="0.01" placeholder="e.g. 24500"></div>
+        <div class="field"><label>Date</label><input id="nwDate" type="date"></div>
+        <button type="submit" class="btn ghost">Log net worth</button>
+        <button type="button" class="btn ghost" id="useCalcBtn">Use calculated total</button>
+      </form>
+      <table class="data-table" id="txnTable"><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th>Amount</th><th></th></tr></thead><tbody></tbody></table>
     </div>
 
     <div class="card">
@@ -471,18 +600,40 @@ table.data-table tr:hover td{background:rgba(255,122,26,0.04);}
           <div class="field"><label>Days/week to train</label>
             <select id="pDays"><option>3</option><option selected>4</option><option>5</option><option>6</option></select>
           </div>
+          <div class="field"><label>Training location</label>
+            <select id="pEquipment">
+              <option value="gym">Full gym access</option>
+              <option value="home">Home, basic kit</option>
+              <option value="bodyweight">Bodyweight only</option>
+              <option value="mix" selected>Mix of gym + home</option>
+            </select>
+          </div>
+          <div class="field"><label>Dietary restrictions</label>
+            <select id="pDietary">
+              <option value="none" selected>None — eat anything</option>
+              <option value="vegetarian">Vegetarian</option>
+              <option value="allergy">Allergy / intolerance</option>
+              <option value="other">Other</option>
+            </select>
+          </div>
+          <div class="field grow"><label>Dietary notes (if any)</label><input id="pDietaryNote" placeholder="e.g. no dairy, dislikes fish"></div>
+          <div class="field grow"><label>Injuries / exercises to avoid</label><input id="pInjuries" placeholder="e.g. bad knee — avoid running"></div>
+          <div class="field"><label>Meal prep style</label>
+            <select id="pMealPrep">
+              <option value="quick" selected>Quick &amp; simple</option>
+              <option value="elaborate">Happy to cook properly</option>
+            </select>
+          </div>
           <button type="submit" class="btn">Save &amp; Generate Plan</button>
         </form>
       </div>
-      <div class="grid2">
-        <div class="card">
-          <h3>Weekly Workout Plan</h3>
-          <div id="workoutPlanBox"><div class="empty-note">Fill in your profile above and generate a plan.</div></div>
-        </div>
-        <div class="card">
-          <h3>Weekly Diet Plan <span class="sm" id="calorieTargetLabel"></span></h3>
-          <div id="dietPlanBox"><div class="empty-note">Fill in your profile above and generate a plan.</div></div>
-        </div>
+      <div class="card">
+        <h3>Weekly Workout Plan</h3>
+        <div id="workoutPlanBox"><div class="empty-note">Fill in your profile above and generate a plan.</div></div>
+      </div>
+      <div class="card">
+        <h3>Weekly Meal Plan <span class="sm" id="calorieTargetLabel"></span></h3>
+        <div id="dietPlanBox"><div class="empty-note">Fill in your profile above and generate a plan.</div></div>
       </div>
     </div>
 
@@ -592,23 +743,1477 @@ table.data-table tr:hover td{background:rgba(255,122,26,0.04);}
     </div>
   </section>
 
+  <section class="panel" id="tab-plan">
+    <h1 class="page-title">5-Year Plan</h1>
+    <div class="page-sub">Your original financial roadmap — kept exactly as designed, as a self-contained planning tool. It doesn't share data with the Finance tab above; edits here only save inside this 5-Year Plan view (use its own Save button to download a snapshot).</div>
+    <div class="card" style="padding:0; overflow:hidden;">
+      <iframe id="planFrame" title="5-Year Plan" style="width:100%; height:82vh; min-height:520px; border:0; display:block; background:#05050b;"></iframe>
+    </div>
+  </section>
+
+  <!-- ============ BRIEFING ============ -->
+  <section class="panel" id="tab-briefing">
+    <h1 class="page-title">Briefing</h1>
+    <div class="page-sub">Your morning read: UK politics and AI news, researched fresh each day.</div>
+    <div class="note-box"><b>Note:</b> this tab shows the last briefing Claude generated. Ask Claude in Cowork to refresh it any time you want new stories — it can also send you the full briefing each morning via a scheduled task.</div>
+
+    <div class="brief-updated" id="briefUpdated"></div>
+
+    <div class="card">
+      <h3>UK Politics</h3>
+      <div id="briefUkPolitics"></div>
+    </div>
+
+    <div class="card">
+      <h3>AI News</h3>
+      <div id="briefAiNews"></div>
+    </div>
+  </section>
+
   <div class="footer-note">LIFE OS · v0.3 · data stored privately in this browser · use Export to back up or move to another device</div>
 </main>
 
 <script>
+/* ============================================================
+   5-YEAR PLAN — embedded verbatim in an iframe, own tab, own state.
+   Kept as a template literal (not innerHTML) so its markup, CSS and JS
+   stay byte-identical and fully isolated from the rest of this app.
+   ============================================================ */
+const PLAN_HTML = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Wes — 5-Year Plan // Command Deck</title>
+<style>
+  :root{
+    color-scheme: dark;
+    --bg:#05050b;
+    --bg-2:#0a0a16;
+    --surface:#12121f;
+    --surface-2:#171728;
+    --surface-3:#1c1c30;
+    --border: rgba(133,150,255,0.16);
+    --border-bright: rgba(133,199,255,0.45);
+    --text-primary:#f2f4ff;
+    --text-secondary:#aeb3d6;
+    --text-muted:#7d81a3;
+    --cyan:#39e6e6;
+    --magenta:#ff3ec8;
+    --series-1:#3987e5; /* blue   - identity slot 1 */
+    --series-2:#d95926; /* orange - identity slot 2 */
+    --series-3:#199e70; /* aqua   - identity slot 3 */
+    --series-4:#c98500; /* yellow - identity slot 4 */
+    --status-good:#0ca30c;
+    --status-warning:#fab219;
+    --status-serious:#ec835a;
+    --status-critical:#e15b5b;
+    --radius: 14px;
+    --font-head: system-ui, -apple-system, "Segoe UI", sans-serif;
+    --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+  }
+
+  *{ box-sizing:border-box; }
+  html{ scroll-behavior:smooth; }
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text-primary);
+    font-family:var(--font-body);
+    font-size:16px;
+    line-height:1.5;
+    min-height:100vh;
+    position:relative;
+    overflow-x:hidden;
+  }
+
+  /* ---------- decorative animated background ---------- */
+  .bg-grid{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background-image:
+      linear-gradient(rgba(57,135,229,0.10) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(57,135,229,0.10) 1px, transparent 1px);
+    background-size: 48px 48px;
+    -webkit-mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 85%);
+            mask-image: radial-gradient(ellipse 80% 60% at 50% 0%, #000 40%, transparent 85%);
+    animation: gridDrift 30s linear infinite;
+  }
+  @keyframes gridDrift{ from{ background-position:0 0,0 0; } to{ background-position:96px 48px, 48px 96px; } }
+  .bg-glow{
+    position:fixed; inset:0; z-index:0; pointer-events:none;
+    background:
+      radial-gradient(600px 400px at 12% 8%, rgba(255,62,200,0.13), transparent 60%),
+      radial-gradient(700px 500px at 88% 18%, rgba(57,230,230,0.10), transparent 60%),
+      radial-gradient(900px 600px at 50% 100%, rgba(57,135,229,0.10), transparent 60%);
+  }
+  .bg-scanline{
+    position:fixed; inset:0; z-index:1; pointer-events:none; opacity:0.5;
+    background: repeating-linear-gradient(0deg, rgba(255,255,255,0.014) 0px, rgba(255,255,255,0.014) 1px, transparent 1px, transparent 3px);
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .bg-grid{ animation:none; }
+    *{ scroll-behavior:auto !important; }
+  }
+
+  a{ color:var(--cyan); }
+
+  /* ---------- layout shell ---------- */
+  .shell{ position:relative; z-index:2; max-width:1180px; margin:0 auto; padding:0 20px 80px; }
+
+  header.topbar{
+    position:sticky; top:0; z-index:20;
+    backdrop-filter: blur(14px) saturate(140%);
+    background:rgba(5,5,12,0.78);
+    border-bottom:1px solid var(--border);
+    padding:14px 20px;
+  }
+  .topbar-inner{
+    max-width:1180px; margin:0 auto;
+    display:flex; align-items:center; justify-content:space-between; gap:16px; flex-wrap:wrap;
+  }
+  .brand{ display:flex; flex-direction:column; gap:2px; }
+  .brand .kicker{
+    font-family:var(--font-head); font-size:11px; letter-spacing:0.22em; color:var(--cyan);
+    text-transform:uppercase;
+  }
+  .brand h1{
+    margin:0; font-family:var(--font-head); font-size:19px; letter-spacing:0.06em;
+    text-shadow:0 0 14px rgba(57,230,230,0.45);
+  }
+  .hud-stat{ text-align:right; }
+  .hud-stat .label{ font-size:11px; letter-spacing:0.12em; text-transform:uppercase; color:var(--text-muted); }
+  .hud-stat .value{
+    font-family:var(--font-head); font-size:24px; color:var(--cyan);
+    text-shadow:0 0 12px rgba(57,230,230,0.5);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .toolbar{ display:flex; gap:8px; flex-wrap:wrap; }
+  .btn{
+    font-family:var(--font-body); font-weight:600; font-size:13px; letter-spacing:0.03em;
+    color:var(--text-primary); background:var(--surface-2);
+    border:1px solid var(--border); border-radius:10px;
+    padding:9px 14px; cursor:pointer; transition:all .18s ease;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .btn:hover{ border-color:var(--border-bright); box-shadow:0 0 16px rgba(57,199,255,0.25); transform:translateY(-1px); }
+  .btn:active{ transform:translateY(0); }
+  .btn.primary{ background:linear-gradient(135deg, rgba(57,135,229,0.35), rgba(57,230,230,0.2)); border-color:var(--border-bright); }
+  .btn.ghost{ background:transparent; }
+  .btn.danger{ border-color:rgba(225,91,91,0.5); color:#ffb3b3; }
+  .btn.small{ padding:6px 10px; font-size:12px; }
+
+  /* ---------- tabs ---------- */
+  nav.tabs{
+    max-width:1180px; margin:0 auto; padding:14px 20px 0;
+    display:flex; gap:6px; flex-wrap:wrap;
+  }
+  .tab-btn{
+    font-family:var(--font-head); font-size:12px; letter-spacing:0.06em; text-transform:uppercase;
+    color:var(--text-secondary); background:var(--surface); border:1px solid var(--border);
+    border-radius:10px 10px 0 0; padding:11px 16px; cursor:pointer; transition:all .2s ease;
+    position:relative; top:1px;
+  }
+  .tab-btn:hover{ color:var(--text-primary); }
+  .tab-btn[aria-selected="true"]{
+    color:var(--cyan); background:var(--surface-2);
+    border-color:var(--border-bright); border-bottom-color:var(--surface-2);
+    box-shadow:0 -2px 18px rgba(57,230,230,0.18);
+  }
+  .tab-btn .num{ opacity:0.55; margin-right:6px; }
+
+  main{
+    background:var(--surface-2); border:1px solid var(--border); border-radius:0 12px 12px 12px;
+    padding:28px clamp(16px,4vw,40px) 40px; min-height:60vh;
+  }
+
+  .panel{ display:none; animation: fadeSlide .38s ease; }
+  .panel.active{ display:block; }
+  @keyframes fadeSlide{ from{ opacity:0; transform:translateY(10px);} to{ opacity:1; transform:translateY(0);} }
+  @media (prefers-reduced-motion: reduce){ .panel{ animation:none; } }
+
+  h2.section-title{
+    font-family:var(--font-head); font-size:15px; letter-spacing:0.1em; text-transform:uppercase;
+    color:var(--text-primary); margin:0 0 4px; display:flex; align-items:center; gap:10px;
+  }
+  h2.section-title::before{
+    content:""; width:8px; height:8px; border-radius:50%; background:var(--cyan);
+    box-shadow:0 0 10px var(--cyan); flex:none;
+  }
+  .section-sub{ color:var(--text-secondary); font-size:15px; margin:0 0 22px; max-width:70ch; }
+  .section-block{ margin-bottom:38px; }
+  .section-block:last-child{ margin-bottom:0; }
+
+  h3.block-title{ font-family:var(--font-head); font-size:13px; letter-spacing:0.06em; color:var(--text-primary); margin:0 0 10px; text-transform:uppercase; }
+
+  p{ color:var(--text-secondary); }
+  .lede{ font-size:17px; color:var(--text-primary); }
+
+  .note{
+    border-left:3px solid var(--cyan); background:rgba(57,230,230,0.06);
+    padding:12px 16px; border-radius:0 10px 10px 0; font-size:14.5px; color:var(--text-secondary); margin:14px 0;
+  }
+  .note.magenta{ border-left-color:var(--magenta); background:rgba(255,62,200,0.06); }
+  .note strong{ color:var(--text-primary); }
+
+  /* ---------- cards / stat grid ---------- */
+  .grid{ display:grid; gap:16px; }
+  .grid.cols-2{ grid-template-columns:repeat(2,1fr); }
+  .grid.cols-3{ grid-template-columns:repeat(3,1fr); }
+  .grid.cols-5{ grid-template-columns:repeat(5,1fr); }
+  @media (max-width:900px){ .grid.cols-5{ grid-template-columns:repeat(2,1fr);} .grid.cols-3{ grid-template-columns:repeat(2,1fr);} }
+  @media (max-width:640px){ .grid.cols-2, .grid.cols-3, .grid.cols-5{ grid-template-columns:1fr; } }
+
+  .card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:16px 18px; transition:border-color .2s ease, transform .2s ease, box-shadow .2s ease;
+    position:relative; overflow:hidden;
+  }
+  .card::after{
+    content:""; position:absolute; inset:0; border-radius:inherit; padding:1px;
+    background:linear-gradient(135deg, rgba(57,230,230,0.0), rgba(57,230,230,0.0));
+    pointer-events:none;
+  }
+  .card:hover{ border-color:var(--border-bright); box-shadow:0 0 22px rgba(57,135,229,0.14); transform:translateY(-2px); }
+
+  .stat-card .label{ font-size:11.5px; letter-spacing:0.08em; text-transform:uppercase; color:var(--text-muted); margin-bottom:6px; }
+  .stat-card .value{ font-family:var(--font-head); font-size:26px; color:var(--text-primary); font-variant-numeric:tabular-nums; }
+  .stat-card .value.accent{ color:var(--cyan); text-shadow:0 0 10px rgba(57,230,230,0.35); }
+  .stat-card .value.warn{ color:var(--series-4); }
+  .stat-card .sub{ font-size:12.5px; color:var(--text-muted); margin-top:4px; }
+
+  /* ---------- editable fields ---------- */
+  .field{ display:flex; flex-direction:column; gap:5px; }
+  .field label{ font-size:12px; letter-spacing:0.04em; color:var(--text-muted); text-transform:uppercase; }
+  .field .input-wrap{
+    display:flex; align-items:center; background:var(--surface-3); border:1px solid var(--border);
+    border-radius:9px; padding:0 10px; transition:border-color .18s ease, box-shadow .18s ease;
+  }
+  .field .input-wrap:focus-within{ border-color:var(--cyan); box-shadow:0 0 0 3px rgba(57,230,230,0.12); }
+  .field .prefix, .field .suffix{ color:var(--text-muted); font-size:14px; }
+  .field input{
+    flex:1; min-width:0; background:transparent; border:0; outline:0; color:var(--text-primary);
+    font-family:var(--font-body); font-weight:600; font-size:15.5px; padding:9px 6px;
+    font-variant-numeric:tabular-nums;
+  }
+  .field input::-webkit-outer-spin-button, .field input::-webkit-inner-spin-button{ opacity:0.5; }
+
+  .editable-badge{
+    display:inline-flex; align-items:center; gap:6px; font-size:12px; color:var(--text-muted);
+    margin-bottom:14px; padding:6px 12px; border:1px dashed var(--border); border-radius:999px; width:fit-content;
+  }
+  .editable-badge .dot{ width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 8px var(--cyan); animation:pulse 1.8s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:1;} 50%{opacity:0.35;} }
+  @media (prefers-reduced-motion: reduce){ .editable-badge .dot{ animation:none; } }
+
+  /* ---------- tables ---------- */
+  table.data-table{ width:100%; border-collapse:collapse; font-size:14.5px; }
+  table.data-table th, table.data-table td{ padding:10px 12px; text-align:left; border-bottom:1px solid var(--border); }
+  table.data-table th{ color:var(--text-muted); font-size:11.5px; letter-spacing:0.06em; text-transform:uppercase; font-weight:600; }
+  table.data-table td{ color:var(--text-primary); font-variant-numeric:tabular-nums; }
+  table.data-table tbody tr{ transition:background .15s ease; }
+  table.data-table tbody tr:hover{ background:rgba(57,135,229,0.06); }
+  .table-wrap{ overflow-x:auto; border:1px solid var(--border); border-radius:var(--radius); background:var(--surface); }
+  .table-wrap table{ margin:0; }
+  .table-wrap.pad{ padding:4px; }
+
+  /* ---------- chart containers ---------- */
+  .chart-card{ background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:18px; }
+  .chart-card .chart-head{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:10px; flex-wrap:wrap; }
+  .chart-card .chart-head h3{ margin:0; }
+  .chart-box{ position:relative; height:280px; }
+  .chart-box.short{ height:200px; }
+  .svg-chart{ position:relative; width:100%; height:100%; }
+  .svg-chart svg{ display:block; width:100%; height:100%; overflow:visible; }
+  .svg-tooltip{
+    position:absolute; z-index:5; pointer-events:none; background:#171728;
+    border:1px solid rgba(133,199,255,0.35); border-radius:8px; padding:8px 11px;
+    font-size:12.5px; color:var(--text-secondary); box-shadow:0 4px 18px rgba(0,0,0,0.4);
+    opacity:0; transition:opacity .1s ease; white-space:nowrap; transform:translate(-50%,-115%);
+  }
+  .svg-tooltip.show{ opacity:1; }
+  .svg-tooltip .tt-title{ color:var(--text-primary); font-weight:700; margin-bottom:3px; }
+  .svg-tooltip .tt-row{ display:flex; align-items:center; gap:6px; }
+  .svg-tooltip .tt-swatch{ width:8px; height:8px; border-radius:2px; display:inline-block; }
+  .chart-empty-hint{ font-size:12.5px; color:var(--text-muted); text-align:center; padding-top:40px; }
+  .legend-row{ display:flex; gap:16px; flex-wrap:wrap; margin-top:10px; font-size:12.5px; color:var(--text-secondary); }
+  .swatch{ display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:6px; vertical-align:-1px; }
+
+  /* ---------- gauge ---------- */
+  .gauge-track{ position:relative; height:14px; border-radius:999px; background:var(--surface-3); overflow:hidden; border:1px solid var(--border); }
+  .gauge-zone{ position:absolute; top:0; bottom:0; }
+  .gauge-marker{
+    position:absolute; top:-6px; width:2px; height:26px; background:var(--text-primary);
+    box-shadow:0 0 10px var(--cyan); transition:left .3s ease;
+  }
+  .gauge-marker::after{
+    content:attr(data-label); position:absolute; top:-22px; left:50%; transform:translateX(-50%);
+    font-size:12px; color:var(--text-primary); white-space:nowrap; font-weight:700;
+  }
+  .gauge-scale{ display:flex; justify-content:space-between; font-size:11px; color:var(--text-muted); margin-top:6px; }
+
+  /* ---------- roadmap ---------- */
+  .roadmap{ display:flex; flex-direction:column; gap:12px; }
+  details.year-card{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    padding:0; overflow:hidden;
+  }
+  details.year-card[open]{ border-color:var(--border-bright); box-shadow:0 0 20px rgba(57,135,229,0.12); }
+  details.year-card summary{
+    list-style:none; cursor:pointer; padding:16px 18px; display:flex; align-items:center; gap:14px;
+  }
+  details.year-card summary::-webkit-details-marker{ display:none; }
+  .year-badge{
+    font-family:var(--font-head); font-size:13px; color:var(--bg); background:var(--cyan);
+    width:38px; height:38px; border-radius:10px; display:flex; align-items:center; justify-content:center;
+    box-shadow:0 0 14px rgba(57,230,230,0.5); flex:none;
+  }
+  .year-summary-text{ flex:1; }
+  .year-summary-text .yr-label{ font-family:var(--font-head); font-size:11px; letter-spacing:0.08em; color:var(--text-muted); text-transform:uppercase; }
+  .year-summary-text .yr-focus{ color:var(--text-primary); font-size:15px; margin-top:2px; }
+  .chevron{ transition:transform .25s ease; color:var(--text-muted); flex:none; }
+  details.year-card[open] .chevron{ transform:rotate(180deg); }
+  .year-body{ padding:0 18px 20px 70px; }
+  .year-body p{ margin:0 0 10px; }
+  .task-list{ list-style:none; margin:10px 0 0; padding:0; display:flex; flex-direction:column; gap:8px; }
+  .task-list li{ display:flex; align-items:center; gap:10px; font-size:14.5px; color:var(--text-secondary); }
+  .task-list input[type=checkbox]{ accent-color:var(--cyan); width:16px; height:16px; }
+  .task-list li.done label{ color:var(--text-muted); text-decoration:line-through; }
+  .year-progress-track{ height:6px; border-radius:999px; background:var(--surface-3); overflow:hidden; margin-top:12px; }
+  .year-progress-fill{ height:100%; background:linear-gradient(90deg, var(--series-1), var(--cyan)); transition:width .3s ease; }
+
+  .roadmap-progress{ display:flex; align-items:center; gap:14px; margin-bottom:18px; }
+  .roadmap-progress .track{ flex:1; height:10px; border-radius:999px; background:var(--surface-3); overflow:hidden; border:1px solid var(--border); }
+  .roadmap-progress .fill{ height:100%; background:linear-gradient(90deg, var(--series-1), var(--cyan)); transition:width .3s ease; }
+  .roadmap-progress .pct{ font-family:var(--font-head); color:var(--cyan); font-size:15px; min-width:48px; text-align:right; }
+
+  /* ---------- checklist ---------- */
+  .checklist{ list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+  .checklist li{
+    display:flex; align-items:flex-start; gap:10px; background:var(--surface); border:1px solid var(--border);
+    border-radius:10px; padding:12px 14px; transition:border-color .15s ease;
+  }
+  .checklist li:hover{ border-color:var(--border-bright); }
+  .checklist input[type=checkbox]{ accent-color:var(--status-good); width:18px; height:18px; margin-top:1px; flex:none; }
+  .checklist li.done{ opacity:0.6; }
+  .checklist li.done label{ text-decoration:line-through; }
+  .checklist label{ font-size:14.5px; color:var(--text-primary); cursor:pointer; }
+
+  /* status badges */
+  .badge{ display:inline-flex; align-items:center; gap:6px; padding:4px 10px; border-radius:999px; font-size:12px; font-weight:700; letter-spacing:0.03em; }
+  .badge.good{ background:rgba(12,163,12,0.16); color:#6fe06f; }
+  .badge.warning{ background:rgba(250,178,25,0.16); color:#ffcf5c; }
+  .badge.critical{ background:rgba(225,91,91,0.16); color:#ff9a9a; }
+
+  /* ---------- misc ---------- */
+  .scenario-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+  @media (max-width:760px){ .scenario-grid{ grid-template-columns:1fr; } }
+  .scenario-card .months{ font-family:var(--font-head); font-size:22px; color:var(--series-3); }
+  .scenario-card .years{ font-size:13px; color:var(--text-muted); }
+
+  footer.foot{
+    max-width:1180px; margin:26px auto 0; padding:18px 20px; color:var(--text-muted); font-size:12.5px;
+    border-top:1px solid var(--border); text-align:center;
+  }
+
+  .file-input-hidden{ display:none; }
+
+  .toast{
+    position:fixed; bottom:20px; left:50%; transform:translateX(-50%) translateY(20px);
+    background:var(--surface-2); border:1px solid var(--border-bright); color:var(--text-primary);
+    padding:12px 20px; border-radius:10px; font-size:14px; z-index:100; opacity:0;
+    transition:all .3s ease; box-shadow:0 0 24px rgba(57,230,230,0.25); pointer-events:none;
+  }
+  .toast.show{ opacity:1; transform:translateX(-50%) translateY(0); }
+
+  .view-toggle{ font-size:12px; }
+</style>
+</head>
+<body data-palette="#3987e5,#d95926,#199e70,#c98500">
+
+<div class="bg-grid" aria-hidden="true"></div>
+<div class="bg-glow" aria-hidden="true"></div>
+<div class="bg-scanline" aria-hidden="true"></div>
+
+<header class="topbar">
+  <div class="topbar-inner">
+    <div class="brand">
+      <span class="kicker">Command Deck // Personal Finance</span>
+      <h1>WES — 5-YEAR PLAN</h1>
+    </div>
+    <div class="hud-stat">
+      <div class="label">Net worth (live)</div>
+      <div class="value" id="hudNetWorth">£0</div>
+    </div>
+    <div class="toolbar">
+      <button class="btn small" id="btnResetTop" title="Reset every field back to the original plan">↺ Reset</button>
+      <input type="file" id="loadFile" accept="application/json" class="file-input-hidden">
+      <button class="btn small" id="btnLoadTop" title="Load a previously saved .json snapshot">⇪ Load</button>
+      <button class="btn small primary" id="btnSaveTop" title="Download your current numbers as a .json file">⇩ Save</button>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs" role="tablist" aria-label="Plan sections">
+  <button class="tab-btn" role="tab" data-tab="overview" aria-selected="true"><span class="num">01</span>Overview</button>
+  <button class="tab-btn" role="tab" data-tab="cashflow" aria-selected="false"><span class="num">02</span>Cash Flow</button>
+  <button class="tab-btn" role="tab" data-tab="investments" aria-selected="false"><span class="num">03</span>Investments</button>
+  <button class="tab-btn" role="tab" data-tab="property" aria-selected="false"><span class="num">04</span>Property</button>
+  <button class="tab-btn" role="tab" data-tab="roadmap" aria-selected="false"><span class="num">05</span>Roadmap</button>
+  <button class="tab-btn" role="tab" data-tab="assumptions" aria-selected="false"><span class="num">06</span>Assumptions</button>
+</nav>
+
+<div class="shell">
+<main>
+
+  <!-- ============ OVERVIEW ============ -->
+  <section class="panel active" id="tab-overview" role="tabpanel">
+    <div class="editable-badge"><span class="dot"></span> Every number on this dashboard is live — edit any field and everything recalculates instantly.</div>
+
+    <div class="section-block">
+      <h2 class="section-title">Executive Summary</h2>
+      <p class="lede">Financial Independence, Property Growth &amp; a Business of Your Own</p>
+      <p style="margin-top:-8px;color:var(--text-muted);font-size:13.5px;">Wes — Leading Hand Chef, Royal Navy &nbsp;·&nbsp; August 2026 – August 2031</p>
+      <p>You're in a strong starting position: a stable Navy salary with food and accommodation covered, one buy-to-let already cash-flowing positively, four active investment accounts, and a side business you're actively building skills toward. This plan turns those into a five-year route toward financial security, a second BTL property, a third income stream, and the stability to start a family on your terms.</p>
+      <div class="note">
+        <strong>Why this plan is structured the way it is:</strong> most people try to save, invest, pay down debt and build a business all at once, in no particular order — and progress stalls. This plan sequences those goals deliberately (emergency fund → clear short debt → deposit fund → business proof points → purchase → re-evaluate), so each step makes the next one safer, not riskier.
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h3 class="block-title">The headline numbers</h3>
+      <div class="grid cols-5" id="statGrid">
+        <div class="card stat-card">
+          <div class="label">Monthly income</div>
+          <div class="value" id="statIncome">£0</div>
+          <div class="sub">Navy + rental</div>
+        </div>
+        <div class="card stat-card">
+          <div class="label">Monthly expenses</div>
+          <div class="value" id="statExpenses">£0</div>
+          <div class="sub">Living costs</div>
+        </div>
+        <div class="card stat-card">
+          <div class="label">Investing / month</div>
+          <div class="value" id="statInvesting">£0</div>
+          <div class="sub">Across 4 accounts</div>
+        </div>
+        <div class="card stat-card">
+          <div class="label">Unallocated surplus</div>
+          <div class="value accent" id="statSurplus">£0</div>
+          <div class="sub" id="statSurplusYear">£0/yr doing nothing yet</div>
+        </div>
+        <div class="card stat-card">
+          <div class="label">Net worth today</div>
+          <div class="value accent" id="statNetWorth">£0</div>
+          <div class="sub">Investments + property − debt</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h3 class="block-title">Net worth breakdown</h3>
+      <div class="grid cols-2">
+        <div class="chart-card">
+          <div class="chart-head">
+            <h3 class="block-title" style="margin:0;">Composition</h3>
+            <button class="btn small ghost view-toggle" id="toggleNetWorthTable">View as table</button>
+          </div>
+          <div class="chart-box" id="netWorthChartWrap"><div id="netWorthChart" class="svg-chart"></div></div>
+          <div class="table-wrap" id="netWorthTableWrap" style="display:none;margin-top:8px;">
+            <table class="data-table">
+              <thead><tr><th>Component</th><th>Amount</th></tr></thead>
+              <tbody id="netWorthTableBody"></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="card" style="display:flex;flex-direction:column;justify-content:center;gap:14px;">
+          <div>
+            <div class="label" style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;"><span class="swatch" style="background:var(--series-1)"></span> Investments &amp; savings</div>
+            <div class="value" style="font-family:var(--font-head);font-size:22px;" id="ovInvSav">£0</div>
+          </div>
+          <div>
+            <div class="label" style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;"><span class="swatch" style="background:var(--series-2)"></span> Property equity</div>
+            <div class="value" style="font-family:var(--font-head);font-size:22px;" id="ovPropEquity">£0</div>
+          </div>
+          <div>
+            <div class="label" style="font-size:11.5px;letter-spacing:0.08em;text-transform:uppercase;color:var(--text-muted);margin-bottom:6px;"><span class="swatch" style="background:var(--status-critical)"></span> ⚠ Amex Gold owed</div>
+            <div class="value" style="font-family:var(--font-head);font-size:22px;color:var(--status-critical);" id="ovAmex">£0</div>
+          </div>
+          <p style="font-size:13px;margin:0;">Navy pay estimated after tax/NI, food &amp; accommodation excluded. Property equity assumes an interest-only BTL mortgage — confirm both against your payslip and lender.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h3 class="block-title">Unallocated surplus: <span id="statSurplus2">£0</span>/month</h3>
+      <p><span id="statSurplusYear2">£0</span> a year doing nothing yet. Suggested order:</p>
+      <div class="grid cols-3">
+        <div class="card"><span class="badge good">① First</span><p style="margin-top:10px;">Build a 3–6 month emergency fund (~£3,000–£6,000). This is what stops a broken boiler or a gap between contracts from turning into high-interest debt.</p></div>
+        <div class="card"><span class="badge warning">② Second</span><p style="margin-top:10px;">Clear the Amex balance if it's carrying interest — guaranteed "return" equal to the card's APR, almost always better than any investment right now.</p></div>
+        <div class="card"><span class="badge">③ Third</span><p style="margin-top:10px;">Send the rest to a dedicated cash "BTL2 deposit fund," kept separate from your stocks/ISA accounts so market dips never delay a property purchase.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ CASH FLOW ============ -->
+  <section class="panel" id="tab-cashflow" role="tabpanel">
+    <h2 class="section-title">Where You Stand &amp; Monthly Cash Flow</h2>
+    <p class="section-sub">Everything below feeds the rest of the dashboard — update these first if your numbers have changed since August 2026.</p>
+
+    <div class="section-block">
+      <h3 class="block-title">Monthly income &amp; expenses</h3>
+      <div class="grid cols-3">
+        <div class="field">
+          <label for="inNavy">Navy salary (net, est.)</label>
+          <div class="input-wrap"><span class="prefix">£</span><input type="number" id="inNavy" data-bind="income.navy" step="1"></div>
+        </div>
+        <div class="field">
+          <label for="inRental">Rental income (gross)</label>
+          <div class="input-wrap"><span class="prefix">£</span><input type="number" id="inRental" data-bind="income.rental" step="1"></div>
+        </div>
+        <div class="field">
+          <label for="inExpenses">Total monthly expenses</label>
+          <div class="input-wrap"><span class="prefix">£</span><input type="number" id="inExpenses" data-bind="expenses.total" step="1"></div>
+        </div>
+      </div>
+      <div class="note">Navy pay here is take-home after tax/NI and pension, with food &amp; accommodation already covered separately by service life — that's why it can look low next to a civilian salary while still leaving a large surplus.</div>
+    </div>
+
+    <div class="section-block">
+      <h3 class="block-title">Monthly breakdown</h3>
+      <div class="chart-card">
+        <div class="chart-box" id="cashflowChartWrap"><div id="cashflowChart" class="svg-chart"></div></div>
+        <div class="legend-row">
+          <span><span class="swatch" style="background:var(--series-1)"></span>Income</span>
+          <span><span class="swatch" style="background:var(--series-2)"></span>Expenses</span>
+          <span><span class="swatch" style="background:var(--series-3)"></span>Investing</span>
+          <span><span class="swatch" style="background:var(--series-4)"></span>Unallocated surplus</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h3 class="block-title">Net worth today</h3>
+      <div class="table-wrap pad">
+        <table class="data-table">
+          <tbody>
+            <tr><td>Investments &amp; savings</td><td id="cfInvSav">£0</td></tr>
+            <tr><td>Amex Gold owed</td><td style="color:var(--status-critical)" id="cfAmex">−£0</td></tr>
+            <tr><td>Property equity</td><td id="cfPropEquity">£0</td></tr>
+            <tr style="font-weight:700;"><td>Estimated net worth</td><td id="cfNetWorth">£0</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ INVESTMENTS ============ -->
+  <section class="panel" id="tab-investments" role="tabpanel">
+    <h2 class="section-title">Investment Portfolio &amp; 5-Year Growth</h2>
+    <p class="section-sub">Four accounts, four jobs: an ISA for tax-free long-term growth, a general investing account, an accessible cash cushion, and a small speculative crypto slice.</p>
+
+    <div class="section-block">
+      <h3 class="block-title">Your accounts (balances &amp; monthly contributions are editable)</h3>
+      <div class="table-wrap pad">
+        <table class="data-table" id="accountsTable">
+          <thead><tr><th>Account</th><th>Balance</th><th>Monthly</th><th>Role</th></tr></thead>
+          <tbody id="accountsBody"></tbody>
+        </table>
+      </div>
+      <div class="note magenta">Your Monzo crypto slice is far more volatile than the rest of the portfolio — worth deciding deliberately how large you want it to grow. Consider capping it (e.g. taking profit back into the ISA) rather than letting winners silently become an oversized % of your net worth.</div>
+    </div>
+
+    <div class="section-block">
+      <h3 class="block-title">5-year growth projection</h3>
+      <div class="grid cols-2" style="margin-bottom:16px;">
+        <div class="field">
+          <label for="inConservative">Conservative growth rate</label>
+          <div class="input-wrap"><input type="number" id="inConservative" data-bind="growthRates.conservative" step="0.1"><span class="suffix">% / yr</span></div>
+        </div>
+        <div class="field">
+          <label for="inModerate">Moderate growth rate</label>
+          <div class="input-wrap"><input type="number" id="inModerate" data-bind="growthRates.moderate" step="0.1"><span class="suffix">% / yr</span></div>
+        </div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-box" id="growthChartWrap"><div id="growthChart" class="svg-chart"></div></div>
+        <div class="legend-row" id="growthLegend">
+          <span><span class="swatch" style="background:var(--series-1)"></span><span id="legendConservative">Conservative</span></span>
+          <span><span class="swatch" style="background:var(--series-2)"></span><span id="legendModerate">Moderate</span></span>
+        </div>
+      </div>
+      <div class="table-wrap pad" style="margin-top:14px;">
+        <table class="data-table">
+          <thead><tr><th>Year</th><th id="thConservative">Conservative</th><th id="thModerate">Moderate</th></tr></thead>
+          <tbody id="growthTableBody"></tbody>
+        </table>
+      </div>
+      <p style="font-size:12.5px;margin-top:10px;">Recalculated live from the starting balances, monthly contributions and rates above, compounded monthly. Illustrative only, not a guarantee — actual returns vary and fees/tax aren't modelled.</p>
+    </div>
+  </section>
+
+  <!-- ============ PROPERTY ============ -->
+  <section class="panel" id="tab-property" role="tabpanel">
+    <h2 class="section-title">Property Portfolio: BTL #2</h2>
+    <p class="section-sub">Your current rental gives comfortable cover above what most buy-to-let lenders require — the second property is about replicating that, not stretching for it.</p>
+
+    <div class="section-block">
+      <h3 class="block-title">Rental cover — BTL #1</h3>
+      <div class="grid cols-2">
+        <div class="field">
+          <label for="inRent">Current rent</label>
+          <div class="input-wrap"><span class="prefix">£</span><input type="number" id="inRent" data-bind="property.currentRent" step="1"></div>
+        </div>
+        <div class="field">
+          <label for="inMortgage">Current mortgage payment</label>
+          <div class="input-wrap"><span class="prefix">£</span><input type="number" id="inMortgage" data-bind="property.currentMortgage" step="1"></div>
+        </div>
+      </div>
+      <div class="card" style="margin-top:16px;">
+        <div class="gauge-track" id="gaugeTrack">
+          <div class="gauge-zone" style="left:0;width:41.7%;background:rgba(225,91,91,0.35);"></div>
+          <div class="gauge-zone" style="left:41.7%;width:8.3%;background:rgba(250,178,25,0.35);"></div>
+          <div class="gauge-zone" style="left:50%;width:50%;background:rgba(12,163,12,0.3);"></div>
+          <div class="gauge-marker" id="gaugeMarker" data-label="153%" style="left:60%;"></div>
+        </div>
+        <div class="gauge-scale"><span>0%</span><span>125% lenders' floor</span><span>145%+ comfortable</span><span>240%</span></div>
+        <p style="margin-top:14px;font-size:14.5px;" id="rentalCoverSummary">Your rent covers 153% of the mortgage payment.</p>
+      </div>
+    </div>
+
+    <div class="section-block">
+      <h3 class="block-title">Second property &amp; deposit</h3>
+      <div class="grid cols-3">
+        <div class="field">
+          <label for="inPrice">Target property price</label>
+          <div class="input-wrap"><span class="prefix">£</span><input type="number" id="inPrice" data-bind="property.targetPrice" step="1000"></div>
+        </div>
+        <div class="field">
+          <label for="inDepositPct">Deposit required</label>
+          <div class="input-wrap"><input type="number" id="inDepositPct" data-bind="property.depositPct" step="1"><span class="suffix">%</span></div>
+        </div>
+        <div class="field">
+          <label>Deposit target</label>
+          <div class="input-wrap"><span class="prefix">£</span><span id="depositTargetDisplay" style="font-weight:700;padding:9px 6px;">0</span></div>
+        </div>
+      </div>
+      <p style="margin-top:10px;">Assuming a second property needing that deposit, saved as cash rather than invested since you'll need it within a few years:</p>
+      <div class="scenario-grid" id="scenarioGrid"></div>
+      <div class="chart-card" style="margin-top:16px;">
+        <div class="chart-box short" id="depositChartWrap"><div id="depositChart" class="svg-chart"></div></div>
+      </div>
+      <div class="note">Each "Monthly saving" figure above is editable — change it and the chart and months-to-target recalculate instantly.</div>
+    </div>
+
+    <div class="section-block">
+      <h3 class="block-title">Before you buy</h3>
+      <div class="grid cols-2">
+        <div class="card"><p style="margin:0;">Get a whole-of-market BTL mortgage broker quote early — lenders typically want rent at <strong>125–145%</strong> of the payment, and criteria vary a lot between lenders.</p></div>
+        <div class="card"><p style="margin:0;">Speak to an accountant about landlord tax rules (Section 24 mortgage interest relief) and whether a limited company structure suits a two-property portfolio.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ============ ROADMAP ============ -->
+  <section class="panel" id="tab-roadmap" role="tabpanel">
+    <h2 class="section-title">Side Hustle &amp; Year-by-Year Roadmap</h2>
+    <p class="section-sub">Your fine dining and high-profile catering background is a real edge for the AI marketing business — few competitors can credibly speak hospitality from the inside. Build case studies from your own experience, trade pilot work for testimonials, then convert to paid retainers once you have proof points.</p>
+
+    <div class="roadmap-progress">
+      <div class="track"><div class="fill" id="roadmapFill" style="width:0%;"></div></div>
+      <div class="pct" id="roadmapPct">0%</div>
+    </div>
+
+    <div class="roadmap" id="roadmapList"></div>
+  </section>
+
+  <!-- ============ ASSUMPTIONS ============ -->
+  <section class="panel" id="tab-assumptions" role="tabpanel">
+    <h2 class="section-title">Assumptions &amp; Next Steps</h2>
+    <p class="section-sub">This plan is only as good as the numbers behind it — check these against your actual accounts every 6 months.</p>
+
+    <div class="section-block">
+      <h3 class="block-title">Worth checking</h3>
+      <ul class="checklist" id="checklistWorthChecking"></ul>
+    </div>
+
+    <div class="section-block">
+      <h3 class="block-title">Do this first</h3>
+      <ul class="checklist" id="checklistDoFirst"></ul>
+    </div>
+
+    <div class="section-block">
+      <div class="note magenta">Revisit this plan every 6 months as income, savings and the business grow. Use <strong>Save</strong> at the top of the page to download a snapshot of exactly where things stood — then <strong>Load</strong> it back in next time to pick up where you left off.</div>
+    </div>
+  </section>
+
+</main>
+
+<footer class="foot">
+  Built from your original 5-Year Plan (Aug 2026). Illustrative only — not financial advice. Figures are editable; use Save to keep a copy of your changes.
+</footer>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============================================================
+     STATE
+  ============================================================ */
+  const DEFAULTS = {
+    income: { navy: 2873, rental: 900 },
+    expenses: { total: 1011 },
+    amexOwed: 196,
+    propertyEquity: 14000,
+    accounts: [
+      { name:"Moneybox S&S ISA", role:"Long-term growth (tax-free)", balance:9148, monthly:300 },
+      { name:"Revolut S&S",       role:"General investing",          balance:0,    monthly:250 },
+      { name:"Lloyds Savings",    role:"Accessible cash cushion",    balance:1000, monthly:300 },
+      { name:"Monzo (crypto)",    role:"Speculative / high risk",    balance:500,  monthly:100 },
+      { name:"Lloyds Current",    role:"Everyday spending",          balance:561,  monthly:0   }
+    ],
+    growthRates: { conservative: 4.0, moderate: 6.5 },
+    property: {
+      currentRent: 900,
+      currentMortgage: 590,
+      targetPrice: 160000,
+      depositPct: 25,
+      scenarios: [500, 900, 1500]
+    },
+    checklistWorthChecking: [
+      "Navy take-home pay estimated (2025/26 tax/NI, non-contributory pension) — confirm against payslip.",
+      "BTL mortgage assumed interest-only; rental profit tax (Section 24) not modelled — get an accountant's view.",
+      "£160k property / £40k deposit are placeholders — swap in real figures once you have a target.",
+      "Growth rates (4%/6.5%) are illustrative averages, not guarantees."
+    ].map(t => ({ text:t, done:false })),
+    checklistDoFirst: [
+      "Open a labelled 'Emergency Fund' savings pot, seeded from Lloyds/current balances.",
+      "Set a standing order for surplus into a new 'BTL2 Deposit' pot.",
+      "Clear the Amex Gold balance if it's carrying interest.",
+      "Confirm interest-only vs repayment with your BTL lender.",
+      "Block 2–3 hrs/week for the marketing business — consistency over intensity.",
+      "Revisit this plan every 6 months as income, savings and the business grow."
+    ].map(t => ({ text:t, done:false })),
+    roadmap: [
+      {
+        year:1,
+        focus:"Foundations: emergency fund, deposit pot, first case studies.",
+        detail:"The whole plan's downside protection gets built this year. Nothing here depends on markets or clients cooperating — it's mechanical, which is exactly why it goes first.",
+        tasks:[
+          "Build 3–6 month emergency fund",
+          "Open a dedicated 'BTL2 Deposit' savings pot",
+          "Keep the £950/mo investing contributions running",
+          "Build 2–3 marketing case studies from past hospitality work",
+          "Weigh up a Navy promotion opportunity"
+        ]
+      },
+      {
+        year:2,
+        focus:"Acceleration: full surplus to deposit fund, first paying clients.",
+        detail:"With the emergency fund and Amex cleared, every spare pound can go to one target instead of being split three ways. This is usually the year the deposit fund visibly starts moving.",
+        tasks:[
+          "Redirect full monthly surplus to the deposit fund",
+          "Land first paying marketing clients",
+          "Review BTL1 mortgage rate if the current term is ending"
+        ]
+      },
+      {
+        year:3,
+        focus:"Preparation: research the purchase, make the business repeatable.",
+        detail:"The deposit fund should be within sight of its target. This is the year to do the unglamorous groundwork — lender conversations, area research — so year 4 is an execution year, not a scramble.",
+        tasks:[
+          "Deposit fund nears its target",
+          "Research target areas and property types",
+          "Speak to a whole-of-market broker and an accountant",
+          "Marketing revenue turns consistent month-to-month"
+        ]
+      },
+      {
+        year:4,
+        focus:"Execution: purchase BTL #2, three income streams live.",
+        detail:"The milestone year. Once BTL #2 completes, income comes from three genuinely independent sources — service pay, two rentals, and a business — which changes the risk profile of the whole plan.",
+        tasks:[
+          "Purchase BTL #2",
+          "Three income streams running: Navy, two rentals, marketing",
+          "Revisit family plans now the property purchase is behind you"
+        ]
+      },
+      {
+        year:5,
+        focus:"Consolidation: evidence a life after the Navy.",
+        detail:"By now the portfolio should be firmly established and both rentals cash-flowing. The business no longer needs to be perfect — it needs to be proof that leaving the Navy on your own terms is a real option, not a hope.",
+        tasks:[
+          "Portfolio at target value (see Investments tab for your live projection)",
+          "Two rentals cash-flowing reliably",
+          "Business established enough to evidence life after the Navy"
+        ]
+      }
+    ]
+  };
+
+  function clone(o){ return JSON.parse(JSON.stringify(o)); }
+  let state = clone(DEFAULTS);
+
+  /* ============================================================
+     HELPERS
+  ============================================================ */
+  const $ = (sel, root) => (root||document).querySelector(sel);
+  const $$ = (sel, root) => Array.from((root||document).querySelectorAll(sel));
+
+  function fmt(n, opts){
+    opts = opts || {};
+    const v = Math.round(n || 0);
+    return "£" + v.toLocaleString("en-GB", { maximumFractionDigits:0 });
+  }
+  function fmtSigned(n){
+    const v = Math.round(n || 0);
+    return (v < 0 ? "−£" : "£") + Math.abs(v).toLocaleString("en-GB");
+  }
+
+  function getPath(obj, path){
+    return path.split(".").reduce((o,k) => (o == null ? o : o[k]), obj);
+  }
+  function setPath(obj, path, val){
+    const parts = path.split(".");
+    let o = obj;
+    for(let i=0;i<parts.length-1;i++){ o = o[parts[i]]; }
+    o[parts[parts.length-1]] = val;
+  }
+
+  function showToast(msg){
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(showToast._tm);
+    showToast._tm = setTimeout(() => t.classList.remove("show"), 2600);
+  }
+
+  function animateNumber(el, to, prefix){
+    prefix = prefix === undefined ? "£" : prefix;
+    const reduce = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const from = parseFloat((el.dataset.raw || "0"));
+    el.dataset.raw = to;
+    if(reduce){ el.textContent = prefix + Math.round(to).toLocaleString("en-GB"); return; }
+    const dur = 500, start = performance.now();
+    function step(now){
+      const p = Math.min(1, (now-start)/dur);
+      const eased = 1 - Math.pow(1-p, 3);
+      const val = from + (to-from)*eased;
+      el.textContent = prefix + Math.round(val).toLocaleString("en-GB");
+      if(p < 1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  /* ============================================================
+     COMPUTATION
+  ============================================================ */
+  function computeDerived(){
+    const totalIncome = state.income.navy + state.income.rental;
+    const investingTotal = state.accounts.reduce((s,a) => s + (a.monthly||0), 0);
+    const surplus = totalIncome - state.expenses.total - investingTotal;
+    const invSavTotal = state.accounts.reduce((s,a) => s + (a.balance||0), 0);
+    const netWorth = invSavTotal - state.amexOwed + state.propertyEquity;
+    const depositTarget = state.property.targetPrice * (state.property.depositPct/100);
+    const rentalCoverPct = state.property.currentMortgage > 0
+      ? (state.property.currentRent / state.property.currentMortgage) * 100 : 0;
+    return { totalIncome, investingTotal, surplus, invSavTotal, netWorth, depositTarget, rentalCoverPct };
+  }
+
+  function growthSeries(p0, pmt, ratePct, years){
+    years = years || 5;
+    const i = (ratePct/100)/12;
+    let bal = p0;
+    const out = [];
+    for(let y=1;y<=years;y++){
+      for(let m=0;m<12;m++){ bal = bal*(1+i) + pmt; }
+      out.push(bal);
+    }
+    return out;
+  }
+
+  /* ============================================================
+     CHARTS — hand-rolled inline SVG (no external chart library,
+     so this page has zero network dependencies and works fully offline)
+  ============================================================ */
+  const seriesColors = { s1:"#3987e5", s2:"#d95926", s3:"#199e70", s4:"#c98500", critical:"#e15b5b" };
+  const SVGNS = "http://www.w3.org/2000/svg";
+
+  function svgEl(tag, attrs){
+    const el = document.createElementNS(SVGNS, tag);
+    for(const k in attrs){ el.setAttribute(k, attrs[k]); }
+    return el;
+  }
+
+  function makeTooltip(container){
+    const tt = document.createElement("div");
+    tt.className = "svg-tooltip";
+    container.appendChild(tt);
+    return {
+      show(x, y, html){ tt.innerHTML = html; tt.style.left = x+"px"; tt.style.top = y+"px"; tt.classList.add("show"); },
+      hide(){ tt.classList.remove("show"); }
+    };
+  }
+
+  function swatchRow(color, label, value){
+    return '<div class="tt-row"><span class="tt-swatch" style="background:'+color+'"></span>'+label+': <strong style="color:var(--text-primary)">'+value+'</strong></div>';
+  }
+
+  /* ---- Donut chart ---- */
+  function donutChart(containerId, opts){
+    const container = document.getElementById(containerId);
+    const tooltip = makeTooltip(container);
+    const size = 240, r = 84, cx = size/2, cy = size/2, sw = 34;
+    const circumference = 2*Math.PI*r;
+
+    function render(values){
+      container.querySelectorAll("svg").forEach(n => n.remove());
+      const total = values.reduce((a,b) => a+Math.max(0,b), 0) || 1;
+      const svg = svgEl("svg", { viewBox:"0 0 "+size+" "+size, width:"100%", height:"100%" });
+      const group = svgEl("g", { transform:"rotate(-90 "+cx+" "+cy+")" });
+      let offset = 0;
+      values.forEach((v, i) => {
+        const val = Math.max(0, v);
+        const frac = val/total;
+        const dash = frac*circumference;
+        const circle = svgEl("circle", {
+          cx, cy, r, fill:"none", stroke:opts.colors[i], "stroke-width":sw,
+          "stroke-dasharray": dash+" "+(circumference-dash),
+          "stroke-dashoffset": -offset, "stroke-linecap": frac>0.002 ? "butt":"round",
+          style:"transition:stroke-dasharray .4s ease, stroke-dashoffset .4s ease; cursor:pointer;"
+        });
+        circle.addEventListener("mousemove", (e) => {
+          const rect = container.getBoundingClientRect();
+          tooltip.show(e.clientX-rect.left, e.clientY-rect.top,
+            '<div class="tt-title">'+opts.labels[i]+'</div>'+swatchRow(opts.colors[i], "Amount", fmt(val)) +
+            '<div style="margin-top:2px;color:var(--text-muted);">'+Math.round(frac*100)+'% of total</div>');
+        });
+        circle.addEventListener("mouseleave", () => tooltip.hide());
+        group.appendChild(circle);
+        offset += dash;
+      });
+      svg.appendChild(group);
+      const centerLabel = svgEl("text", { x:cx, y:cy-6, "text-anchor":"middle", fill:"var(--text-muted)", "font-size":"11", style:"text-transform:uppercase;letter-spacing:.06em;" });
+      centerLabel.textContent = "Net worth";
+      const centerValue = svgEl("text", { x:cx, y:cy+16, "text-anchor":"middle", fill:"var(--text-primary)", "font-size":"20", "font-weight":"700" });
+      centerValue.textContent = "£0"; // overwritten by update()'s centerText arg
+      svg.appendChild(centerLabel); svg.appendChild(centerValue);
+      container.appendChild(svg);
+      container._centerValueEl = centerValue;
+    }
+    return { update:(values, centerText) => { render(values); if(centerText && container._centerValueEl) container._centerValueEl.textContent = centerText; } };
+  }
+
+  /* ---- Vertical bar chart (with direct labels) ---- */
+  function barChart(containerId, opts){
+    const container = document.getElementById(containerId);
+    const tooltip = makeTooltip(container);
+    function render(values){
+      container.querySelectorAll("svg").forEach(n => n.remove());
+      const W = 480, H = 240, padL = 44, padB = 30, padT = 24, padR = 12;
+      const plotW = W-padL-padR, plotH = H-padT-padB;
+      const maxV = Math.max(1, ...values.map(v => Math.abs(v))) * 1.18;
+      const n = values.length;
+      const gap = plotW*0.12/n;
+      const bw = (plotW - gap*(n+1)) / n;
+      const svg = svgEl("svg", { viewBox:"0 0 "+W+" "+H, width:"100%", height:"100%" });
+
+      // gridlines
+      for(let g=0; g<=4; g++){
+        const gy = padT + plotH - (g/4)*plotH;
+        svg.appendChild(svgEl("line", { x1:padL, x2:W-padR, y1:gy, y2:gy, stroke:"rgba(133,150,255,0.10)", "stroke-width":1 }));
+        const lbl = svgEl("text", { x:padL-8, y:gy+4, "text-anchor":"end", fill:"var(--text-muted)", "font-size":"10" });
+        lbl.textContent = "£"+Math.round(maxV*g/4/100)*100/1000 + (maxV*g/4 >= 1000 ? "k":"");
+        svg.appendChild(lbl);
+      }
+
+      values.forEach((v, i) => {
+        const x = padL + gap + i*(bw+gap);
+        const h = Math.max(2, (Math.abs(v)/maxV)*plotH);
+        const y = padT + plotH - h;
+        const rect = svgEl("rect", { x, y, width:bw, height:h, rx:6, fill:opts.colors[i], style:"cursor:pointer; transition:opacity .15s;" });
+        rect.addEventListener("mouseenter", () => rect.style.opacity = "0.75");
+        rect.addEventListener("mouseleave", () => { rect.style.opacity = "1"; tooltip.hide(); });
+        rect.addEventListener("mousemove", (e) => {
+          const crect = container.getBoundingClientRect();
+          tooltip.show(e.clientX-crect.left, e.clientY-crect.top,
+            '<div class="tt-title">'+opts.labels[i]+'</div>'+swatchRow(opts.colors[i], opts.unit||"Amount", fmt(v)+(opts.suffix||"")));
+        });
+        svg.appendChild(rect);
+
+        const val = svgEl("text", { x:x+bw/2, y:y-8, "text-anchor":"middle", fill:"var(--text-primary)", "font-size":"11.5", "font-weight":"700" });
+        val.textContent = (opts.valueLabel ? opts.valueLabel(v) : fmt(v));
+        svg.appendChild(val);
+
+        const lbl = svgEl("text", { x:x+bw/2, y:H-8, "text-anchor":"middle", fill:"var(--text-muted)", "font-size":"11" });
+        lbl.textContent = opts.labels[i];
+        svg.appendChild(lbl);
+      });
+
+      container.appendChild(svg);
+    }
+    return { update: render };
+  }
+
+  /* ---- Horizontal bar chart ---- */
+  function hBarChart(containerId, opts){
+    const container = document.getElementById(containerId);
+    const tooltip = makeTooltip(container);
+    function render(labels, values, colors){
+      container.querySelectorAll("svg").forEach(n => n.remove());
+      const W = 480, H = 170, padL = 92, padR = 56, padT = 14, padB = 14;
+      const plotW = W-padL-padR, plotH = H-padT-padB;
+      const maxV = Math.max(1, ...values) * 1.15;
+      const n = values.length;
+      const gap = plotH*0.22/n;
+      const bh = (plotH - gap*(n+1)) / n;
+      const svg = svgEl("svg", { viewBox:"0 0 "+W+" "+H, width:"100%", height:"100%" });
+
+      values.forEach((v, i) => {
+        const y = padT + gap + i*(bh+gap);
+        const w = Math.max(2, (v/maxV)*plotW);
+        const rect = svgEl("rect", { x:padL, y, width:w, height:bh, rx:6, fill:colors[i], style:"cursor:pointer; transition:opacity .15s;" });
+        rect.addEventListener("mouseenter", () => rect.style.opacity = "0.75");
+        rect.addEventListener("mouseleave", () => { rect.style.opacity = "1"; tooltip.hide(); });
+        rect.addEventListener("mousemove", (e) => {
+          const crect = container.getBoundingClientRect();
+          tooltip.show(e.clientX-crect.left, e.clientY-crect.top,
+            '<div class="tt-title">'+labels[i]+'</div>'+swatchRow(colors[i], "Time to target", v+" months ("+(v/12).toFixed(1)+" yrs)"));
+        });
+        svg.appendChild(rect);
+
+        const lbl = svgEl("text", { x:padL-8, y:y+bh/2+4, "text-anchor":"end", fill:"var(--text-muted)", "font-size":"11.5" });
+        lbl.textContent = labels[i];
+        svg.appendChild(lbl);
+
+        const val = svgEl("text", { x:padL+w+8, y:y+bh/2+4, "text-anchor":"start", fill:"var(--text-primary)", "font-size":"11.5", "font-weight":"700" });
+        val.textContent = v+"mo";
+        svg.appendChild(val);
+      });
+
+      container.appendChild(svg);
+    }
+    return { update: render };
+  }
+
+  /* ---- Line chart with crosshair + tooltip ---- */
+  function lineChart(containerId, opts){
+    const container = document.getElementById(containerId);
+    const tooltip = makeTooltip(container);
+    function render(labels, series){
+      container.querySelectorAll("svg").forEach(n => n.remove());
+      const W = 620, H = 260, padL = 54, padR = 16, padT = 20, padB = 30;
+      const plotW = W-padL-padR, plotH = H-padT-padB;
+      const allVals = series.flatMap(s => s.data);
+      const maxV = Math.max(1, ...allVals) * 1.12;
+      const minV = 0;
+      const n = labels.length;
+      const xAt = (i) => padL + (i/(n-1))*plotW;
+      const yAt = (v) => padT + plotH - ((v-minV)/(maxV-minV))*plotH;
+
+      const svg = svgEl("svg", { viewBox:"0 0 "+W+" "+H, width:"100%", height:"100%" });
+
+      for(let g=0; g<=4; g++){
+        const gy = padT + plotH - (g/4)*plotH;
+        svg.appendChild(svgEl("line", { x1:padL, x2:W-padR, y1:gy, y2:gy, stroke:"rgba(133,150,255,0.10)", "stroke-width":1 }));
+        const lbl = svgEl("text", { x:padL-8, y:gy+4, "text-anchor":"end", fill:"var(--text-muted)", "font-size":"10" });
+        const v = maxV*g/4;
+        lbl.textContent = "£"+(v>=1000 ? (v/1000).toFixed(0)+"k" : Math.round(v));
+        svg.appendChild(lbl);
+      }
+      labels.forEach((lb, i) => {
+        const lbl = svgEl("text", { x:xAt(i), y:H-8, "text-anchor":"middle", fill:"var(--text-muted)", "font-size":"10.5" });
+        lbl.textContent = lb;
+        svg.appendChild(lbl);
+      });
+
+      series.forEach(s => {
+        let d = "";
+        s.data.forEach((v,i) => { d += (i===0?"M":"L") + xAt(i) + " " + yAt(v) + " "; });
+        const areaD = d + "L "+xAt(n-1)+" "+yAt(0)+" L "+xAt(0)+" "+yAt(0)+" Z";
+        svg.appendChild(svgEl("path", { d:areaD, fill:s.color, opacity:"0.08", stroke:"none" }));
+        svg.appendChild(svgEl("path", { d, fill:"none", stroke:s.color, "stroke-width":2.5, "stroke-linejoin":"round", "stroke-linecap":"round" }));
+        s.data.forEach((v,i) => {
+          svg.appendChild(svgEl("circle", { cx:xAt(i), cy:yAt(v), r:4, fill:s.color, stroke:"#0d0d16", "stroke-width":1.5 }));
+        });
+      });
+
+      // crosshair overlay
+      const crosshair = svgEl("line", { x1:padL, x2:padL, y1:padT, y2:padT+plotH, stroke:"rgba(255,255,255,0.25)", "stroke-width":1, "stroke-dasharray":"3 3", opacity:"0" });
+      svg.appendChild(crosshair);
+      const overlay = svgEl("rect", { x:padL, y:padT, width:plotW, height:plotH, fill:"transparent", style:"cursor:crosshair;" });
+      overlay.addEventListener("mousemove", (e) => {
+        const crect = container.getBoundingClientRect();
+        const scaleX = W / crect.width;
+        const relX = (e.clientX - crect.left) * scaleX;
+        let idx = Math.round((relX - padL) / plotW * (n-1));
+        idx = Math.max(0, Math.min(n-1, idx));
+        crosshair.setAttribute("x1", xAt(idx)); crosshair.setAttribute("x2", xAt(idx)); crosshair.setAttribute("opacity","1");
+        let html = '<div class="tt-title">'+labels[idx]+'</div>';
+        series.forEach(s => { html += swatchRow(s.color, s.label, fmt(s.data[idx])); });
+        tooltip.show(e.clientX-crect.left, padT, html);
+      });
+      overlay.addEventListener("mouseleave", () => { crosshair.setAttribute("opacity","0"); tooltip.hide(); });
+      svg.appendChild(overlay);
+
+      container.appendChild(svg);
+    }
+    return { update: render };
+  }
+
+  let netWorthChart, cashflowChart, growthChart, depositChart;
+
+  function initCharts(){
+    netWorthChart = donutChart("netWorthChart", {
+      labels:["Investments & savings","Property equity","Amex owed"],
+      colors:[seriesColors.s1, seriesColors.s2, seriesColors.critical]
+    });
+    cashflowChart = barChart("cashflowChart", {
+      labels:["Income","Expenses","Investing","Surplus"],
+      colors:[seriesColors.s1, seriesColors.s2, seriesColors.s3, seriesColors.s4]
+    });
+    growthChart = lineChart("growthChart", {});
+    depositChart = hBarChart("depositChart", {});
+  }
+
+  /* ============================================================
+     RENDER
+  ============================================================ */
+  function renderAccountsTable(){
+    const body = $("#accountsBody");
+    body.innerHTML = "";
+    state.accounts.forEach((a, idx) => {
+      const tr = document.createElement("tr");
+      tr.innerHTML =
+        '<td>'+a.name+'</td>' +
+        '<td><div class="input-wrap" style="max-width:130px;"><span class="prefix">£</span><input type="number" step="1" data-bind="accounts.'+idx+'.balance" value="'+a.balance+'"></div></td>' +
+        '<td><div class="input-wrap" style="max-width:110px;"><span class="prefix">£</span><input type="number" step="1" data-bind="accounts.'+idx+'.monthly" value="'+a.monthly+'"></div></td>' +
+        '<td style="color:var(--text-muted);font-size:13px;">'+a.role+'</td>';
+      body.appendChild(tr);
+    });
+    wireInputs(body);
+  }
+
+  function renderScenarios(depositTarget){
+    const grid = $("#scenarioGrid");
+    grid.innerHTML = "";
+    const labels = [], months = [];
+    state.property.scenarios.forEach((amt, idx) => {
+      const mo = amt > 0 ? Math.ceil(depositTarget/amt) : 0;
+      labels.push(fmt(amt)+"/mo");
+      months.push(mo);
+      const card = document.createElement("div");
+      card.className = "card scenario-card";
+      card.innerHTML =
+        '<div class="field" style="margin-bottom:10px;">'+
+          '<label>Monthly saving</label>'+
+          '<div class="input-wrap"><span class="prefix">£</span><input type="number" step="10" data-bind="property.scenarios.'+idx+'" value="'+amt+'"></div>'+
+        '</div>'+
+        '<div class="months">'+mo+' mo</div>'+
+        '<div class="years">'+(mo/12).toFixed(1)+' yrs to £'+Math.round(depositTarget).toLocaleString("en-GB")+'</div>';
+      grid.appendChild(card);
+    });
+    depositChart.update(labels, months, [seriesColors.s1, seriesColors.s2, seriesColors.s3]);
+    wireInputs(grid);
+  }
+
+  function renderGrowthTable(cons, mod){
+    const body = $("#growthTableBody");
+    body.innerHTML = "";
+    for(let y=0;y<5;y++){
+      const tr = document.createElement("tr");
+      tr.innerHTML = '<td>Year '+(y+1)+'</td><td>'+fmt(cons[y])+'</td><td>'+fmt(mod[y])+'</td>';
+      body.appendChild(tr);
+    }
+  }
+
+  function renderRoadmap(){
+    const list = $("#roadmapList");
+    list.innerHTML = "";
+    state.roadmap.forEach((yr, yIdx) => {
+      const det = document.createElement("details");
+      det.className = "year-card";
+      if(yIdx === 0) det.open = true;
+      const tasksHtml = yr.tasks.map((t, tIdx) => {
+        const id = "yr"+yIdx+"task"+tIdx;
+        const done = !!(yr.doneTasks && yr.doneTasks[tIdx]);
+        return '<li class="'+(done?"done":"")+'"><input type="checkbox" id="'+id+'" data-year="'+yIdx+'" data-task="'+tIdx+'" '+(done?"checked":"")+'><label for="'+id+'">'+t+'</label></li>';
+      }).join("");
+      det.innerHTML =
+        '<summary>'+
+          '<span class="year-badge">Y'+yr.year+'</span>'+
+          '<span class="year-summary-text"><div class="yr-label">Year '+yr.year+'</div><div class="yr-focus">'+yr.focus+'</div></span>'+
+          '<span class="chevron">▾</span>'+
+        '</summary>'+
+        '<div class="year-body">'+
+          '<p>'+yr.detail+'</p>'+
+          '<ul class="task-list">'+tasksHtml+'</ul>'+
+          '<div class="year-progress-track"><div class="year-progress-fill" data-year-progress="'+yIdx+'" style="width:0%;"></div></div>'+
+        '</div>';
+      list.appendChild(det);
+    });
+    $$('#roadmapList input[type=checkbox]').forEach(cb => {
+      cb.addEventListener("change", () => {
+        const y = +cb.dataset.year, t = +cb.dataset.task;
+        state.roadmap[y].doneTasks = state.roadmap[y].doneTasks || [];
+        state.roadmap[y].doneTasks[t] = cb.checked;
+        cb.closest("li").classList.toggle("done", cb.checked);
+        updateRoadmapProgress();
+      });
+    });
+    updateRoadmapProgress();
+  }
+
+  function updateRoadmapProgress(){
+    let total = 0, done = 0;
+    state.roadmap.forEach((yr, yIdx) => {
+      const dt = yr.doneTasks || [];
+      const yDone = dt.filter(Boolean).length;
+      total += yr.tasks.length; done += yDone;
+      const pct = yr.tasks.length ? (yDone/yr.tasks.length*100) : 0;
+      const bar = $('[data-year-progress="'+yIdx+'"]');
+      if(bar) bar.style.width = pct + "%";
+    });
+    const overall = total ? Math.round(done/total*100) : 0;
+    $("#roadmapFill").style.width = overall + "%";
+    $("#roadmapPct").textContent = overall + "%";
+  }
+
+  function renderChecklist(containerId, key){
+    const ul = $(containerId);
+    ul.innerHTML = "";
+    state[key].forEach((item, idx) => {
+      const li = document.createElement("li");
+      li.className = item.done ? "done" : "";
+      const id = key+idx;
+      li.innerHTML = '<input type="checkbox" id="'+id+'" '+(item.done?"checked":"")+'><label for="'+id+'">'+item.text+'</label>';
+      li.querySelector("input").addEventListener("change", (e) => {
+        state[key][idx].done = e.target.checked;
+        li.classList.toggle("done", e.target.checked);
+      });
+      ul.appendChild(li);
+    });
+  }
+
+  function renderGauge(coverPct){
+    const marker = $("#gaugeMarker");
+    const clamped = Math.max(0, Math.min(240, coverPct));
+    marker.style.left = (clamped/240*100) + "%";
+    marker.dataset.label = Math.round(coverPct) + "%";
+    let msg, cls;
+    if(coverPct >= 145){ msg = "comfortably above what most BTL lenders want."; cls="good"; }
+    else if(coverPct >= 125){ msg = "within the range lenders typically want, but not with much headroom."; cls="warning"; }
+    else { msg = "below what most BTL lenders want (125–145%) — worth reviewing rent or mortgage terms."; cls="critical"; }
+    $("#rentalCoverSummary").innerHTML = "Your rent covers <strong>"+Math.round(coverPct)+"%</strong> of the mortgage payment — " + msg;
+  }
+
+  /* ============================================================
+     RECOMPUTE — the single source of truth refresh
+  ============================================================ */
+  function recomputeAll(){
+    const d = computeDerived();
+
+    animateNumber($("#hudNetWorth"), d.netWorth);
+    animateNumber($("#statIncome"), d.totalIncome);
+    animateNumber($("#statExpenses"), d.totalIncome ? state.expenses.total : state.expenses.total);
+    animateNumber($("#statInvesting"), d.investingTotal);
+    animateNumber($("#statSurplus"), d.surplus);
+    animateNumber($("#statNetWorth"), d.netWorth);
+    $("#statSurplusYear").textContent = fmt(d.surplus*12) + "/yr doing nothing yet";
+    $("#statSurplus2").textContent = fmt(d.surplus);
+    $("#statSurplusYear2").textContent = fmt(d.surplus*12);
+
+    $("#ovInvSav").textContent = fmt(d.invSavTotal);
+    $("#ovPropEquity").textContent = fmt(state.propertyEquity);
+    $("#ovAmex").textContent = "−" + fmt(state.amexOwed);
+
+    $("#cfInvSav").textContent = fmt(d.invSavTotal);
+    $("#cfAmex").textContent = "−" + fmt(state.amexOwed);
+    $("#cfPropEquity").textContent = fmt(state.propertyEquity);
+    $("#cfNetWorth").textContent = fmt(d.netWorth);
+
+    // net worth chart + table
+    netWorthChart.update([d.invSavTotal, state.propertyEquity, state.amexOwed], fmt(d.netWorth));
+    $("#netWorthTableBody").innerHTML =
+      '<tr><td>Investments & savings</td><td>'+fmt(d.invSavTotal)+'</td></tr>'+
+      '<tr><td>Property equity</td><td>'+fmt(state.propertyEquity)+'</td></tr>'+
+      '<tr><td>Amex Gold owed</td><td>−'+fmt(state.amexOwed)+'</td></tr>'+
+      '<tr style="font-weight:700;"><td>Net worth</td><td>'+fmt(d.netWorth)+'</td></tr>';
+
+    // cash flow chart
+    cashflowChart.update([d.totalIncome, state.expenses.total, d.investingTotal, d.surplus]);
+
+    // accounts + growth chart
+    const cons = growthSeries(d.invSavTotal, d.investingTotal, state.growthRates.conservative);
+    const mod = growthSeries(d.invSavTotal, d.investingTotal, state.growthRates.moderate);
+    growthChart.update(
+      ["Today","Year 1","Year 2","Year 3","Year 4","Year 5"],
+      [
+        { label:"Conservative ("+state.growthRates.conservative+"%)", color:seriesColors.s1, data:[d.invSavTotal, ...cons] },
+        { label:"Moderate ("+state.growthRates.moderate+"%)", color:seriesColors.s2, data:[d.invSavTotal, ...mod] }
+      ]
+    );
+    $("#thConservative").textContent = "Conservative ("+state.growthRates.conservative+"%)";
+    $("#thModerate").textContent = "Moderate ("+state.growthRates.moderate+"%)";
+    $("#legendConservative").textContent = "Conservative ("+state.growthRates.conservative+"%)";
+    $("#legendModerate").textContent = "Moderate ("+state.growthRates.moderate+"%)";
+    renderGrowthTable(cons, mod);
+
+    // property
+    $("#depositTargetDisplay").textContent = Math.round(d.depositTarget).toLocaleString("en-GB");
+    renderScenarios(d.depositTarget);
+    renderGauge(d.rentalCoverPct);
+  }
+
+  /* ============================================================
+     INPUT WIRING
+  ============================================================ */
+  function wireInputs(root){
+    $$('[data-bind]', root || document).forEach(el => {
+      el.value = getPath(state, el.dataset.bind);
+      el.addEventListener("input", () => {
+        let v = parseFloat(el.value);
+        if(isNaN(v)) v = 0;
+        setPath(state, el.dataset.bind, v);
+        recomputeAll();
+      });
+    });
+  }
+
+  function refreshAllInputValues(){
+    $$('[data-bind]').forEach(el => { el.value = getPath(state, el.dataset.bind); });
+  }
+
+  /* ============================================================
+     TABS
+  ============================================================ */
+  function initTabs(){
+    const btns = $$(".tab-btn");
+    btns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        btns.forEach(b => b.setAttribute("aria-selected", "false"));
+        btn.setAttribute("aria-selected", "true");
+        $$(".panel").forEach(p => p.classList.remove("active"));
+        $("#tab-"+btn.dataset.tab).classList.add("active");
+        window.scrollTo({ top:0, behavior: (window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth") });
+      });
+    });
+  }
+
+  /* ============================================================
+     SAVE / LOAD / RESET
+  ============================================================ */
+  function saveSnapshot(){
+    const blob = new Blob([JSON.stringify(state, null, 2)], { type:"application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "wes-5-year-plan-data.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+    showToast("Saved — wes-5-year-plan-data.json downloaded.");
+  }
+
+  function loadSnapshot(file){
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try{
+        const loaded = JSON.parse(e.target.result);
+        state = Object.assign(clone(DEFAULTS), loaded);
+        rebuildEverything();
+        showToast("Loaded saved plan data.");
+      } catch(err){
+        showToast("Couldn't read that file — is it a plan .json?");
+      }
+    };
+    reader.readAsText(file);
+  }
+
+  function resetToDefaults(){
+    state = clone(DEFAULTS);
+    rebuildEverything();
+    showToast("Reset to the original plan figures.");
+  }
+
+  function rebuildEverything(){
+    renderAccountsTable();
+    renderRoadmap();
+    renderChecklist("#checklistWorthChecking", "checklistWorthChecking");
+    renderChecklist("#checklistDoFirst", "checklistDoFirst");
+    refreshAllInputValues();
+    recomputeAll();
+  }
+
+  /* ============================================================
+     INIT
+  ============================================================ */
+  document.addEventListener("DOMContentLoaded", () => {
+    initTabs();
+    initCharts();
+    renderAccountsTable();
+    renderRoadmap();
+    renderChecklist("#checklistWorthChecking", "checklistWorthChecking");
+    renderChecklist("#checklistDoFirst", "checklistDoFirst");
+    wireInputs(document);
+    recomputeAll();
+
+    $("#toggleNetWorthTable").addEventListener("click", () => {
+      const wrap = $("#netWorthTableWrap");
+      const chartWrap = $("#netWorthChartWrap");
+      const showing = wrap.style.display !== "none";
+      wrap.style.display = showing ? "none" : "block";
+      chartWrap.style.display = showing ? "block" : "none";
+      $("#toggleNetWorthTable").textContent = showing ? "View as table" : "View as chart";
+    });
+
+    $("#btnSaveTop").addEventListener("click", saveSnapshot);
+    $("#btnResetTop").addEventListener("click", () => {
+      if(confirm("Reset every field back to the original plan figures? This can't be undone unless you've saved a snapshot.")) resetToDefaults();
+    });
+    $("#btnLoadTop").addEventListener("click", () => $("#loadFile").click());
+    $("#loadFile").addEventListener("change", (e) => {
+      if(e.target.files && e.target.files[0]) loadSnapshot(e.target.files[0]);
+      e.target.value = "";
+    });
+  });
+})();
+<\/script>
+</body>
+</html>
+`;
+let planFrameLoaded = false;
+function loadPlanFrame(){
+  if(planFrameLoaded) return;
+  const frame = document.getElementById('planFrame');
+  if(frame) frame.srcdoc = PLAN_HTML;
+  planFrameLoaded = true;
+}
+
 /* ============================================================
    STATE
    ============================================================ */
 const STORAGE_KEY = 'lifeOS_data_v2';
 
 function seedTransactions(){
-  // one month only — recurring income. Recurring costs live in Expenses,
+  // transactions are for one-off items only (bonuses, gifts, one-time costs).
+  // recurring monthly pay lives in Income, recurring costs live in Expenses,
   // recurring investment contributions live on each Investment's "Monthly" field.
-  const today = new Date();
-  const dateStr = new Date(today.getFullYear(), today.getMonth(), 1).toISOString().slice(0,10);
+  return [];
+}
+
+function seedIncome(){
+  // recurring monthly pay — always counted every month, same pattern as Expenses.
+  // one-off income (bonuses, gifts) still goes through the Transactions log below.
   return [
-    {type:'income', category:'Salary', desc:'Navy salary', amount:2873, date:dateStr},
-    {type:'income', category:'Rental', desc:'BTL1 rental income', amount:900, date:dateStr}
+    {name:'Navy salary', category:'Salary', amount:2873, note:''},
+    {name:'BTL1 rental income', category:'Rental', amount:900, note:''}
   ];
 }
 
@@ -651,6 +2256,64 @@ function seedRealTodos(){
   ];
 }
 
+function seedBriefing(){
+  return {
+    updated: '2026-08-19',
+    ukPolitics: [
+      {
+        title: 'Farage reclaims his seat in the Clacton by-election',
+        sentence: 'He won comfortably over satirical rival Count Binface, months after resigning the seat amid a donation investigation, according to Al Jazeera.',
+        url: 'https://www.aljazeera.com/news/2026/8/14/nigel-farage-defeats-count-binface-to-reclaim-uk-parliamentary-seat',
+        source: 'Al Jazeera'
+      },
+      {
+        title: 'Burnham was tricked by a hoax posing as the White House',
+        sentence: 'Downing Street confirmed the PM exchanged a few messages with an imposter posing as a senior US official before growing suspicious, reported this week.',
+        url: 'https://www.breitbart.com/europe/2026/08/17/uk-prime-minister-andy-burnham-duped-by-hoax-white-house-messages/',
+        source: 'reported this week'
+      },
+      {
+        title: 'Burnham faces backlash over housing and asylum plans',
+        sentence: 'Plans to place asylum seekers near a small village and to ease rules on Traveller encampments have drawn sharp local pushback, per coverage out yesterday.',
+        url: 'https://hotair.com/tree-hugging-sister/2026/08/18/burnham-rapidly-burning-bridges-with-housing-issues-n3818118',
+        source: 'coverage out yesterday'
+      }
+    ],
+    aiNews: [
+      {
+        title: 'Google DeepMind reshuffles its top leadership',
+        sentence: "Demis Hassabis moves to chairman while CTO Koray Kavukcuoglu takes operational control, and veteran researcher Jeff Dean departs after 27 years to start his own venture, per this week's roundup.",
+        url: 'https://www.buildfastwithai.com/blogs/ai-news-today-august-9-2026',
+        source: "this week's roundup"
+      },
+      {
+        title: 'OpenAI tightens safeguards after a security incident',
+        sentence: 'New monitoring, stricter network isolation, and a 30-minute alert system follow an incident tied to Hugging Face, reported by TechCrunch.',
+        url: 'https://techcrunch.com/2026/08/18/openai-institutes-new-safeguards-after-hugging-face-breach/',
+        source: 'TechCrunch'
+      },
+      {
+        title: 'OpenAI rolls out a safer ChatGPT for teens',
+        sentence: 'The company introduced a protected version of the chatbot built specifically for younger users, according to TechCrunch.',
+        url: 'https://techcrunch.com/2026/08/18/openai-launches-a-safer-chatgpt-for-teens-years-after-teens-started-using-it/',
+        source: 'TechCrunch'
+      },
+      {
+        title: 'Cursor launches a hosting platform to rival GitHub',
+        sentence: 'The coding tool is capitalizing on developer frustration with GitHub to push into code hosting, per TechCrunch.',
+        url: 'https://techcrunch.com/2026/08/18/cursor-capitalizes-on-github-frustration-launches-rival-hosting-platform/',
+        source: 'TechCrunch'
+      },
+      {
+        title: 'Warp ships an AI "software factory" for developers',
+        sentence: 'The new system offers an out-of-the-box setup for building AI applications, according to TechCrunch.',
+        url: 'https://techcrunch.com/2026/08/18/warps-new-system-is-an-out-of-the-box-software-factory-for-ai-development/',
+        source: 'TechCrunch'
+      }
+    ]
+  };
+}
+
 function defaultState(){
   const investments = seedInvestments();
   const debts = seedDebts();
@@ -658,6 +2321,7 @@ function defaultState(){
   return {
     finance:{
       transactions: seedTransactions(),
+      income: seedIncome(),
       expenses: seedExpenses(),
       investments: investments,
       debts: debts,
@@ -669,7 +2333,7 @@ function defaultState(){
       }
     },
     health:{
-      profile:{sex:'male', age:'', height:'', weight:'', target:'', activity:'1.55', days:'4'},
+      profile:{sex:'male', age:'', height:'', weight:'', target:'', activity:'1.55', days:'4', equipment:'mix', dietary:'none', dietaryNote:'', injuries:'', mealPrep:'quick'},
       weighIns:[],
       sleep:[],
       steps:[],
@@ -695,7 +2359,8 @@ function defaultState(){
       ],
       learningLog:[]
     },
-    meta:{ calMonth:new Date().getMonth(), calYear:new Date().getFullYear() }
+    meta:{ calMonth:new Date().getMonth(), calYear:new Date().getFullYear() },
+    briefing: seedBriefing()
   };
 }
 
@@ -743,6 +2408,29 @@ function load(){
     }
     s.meta.upgradedStockData = true;
   }
+  // one-time: recurring pay (salary/rent) used to be logged as one-off dated
+  // transactions, which meant "Income (mo)" went to £0 as soon as the month
+  // rolled over. Move it into a proper recurring Income list (same pattern as
+  // Expenses) so it's always counted, every month, in every chart.
+  if(!s.finance.income) s.finance.income = seedIncome();
+  if(!s.meta.upgradedToRecurringIncome){
+    s.finance.transactions = (s.finance.transactions||[]).filter(t =>
+      !(t.type==='income' && (t.desc==='Navy salary' || t.desc==='BTL1 rental income'))
+    );
+    s.meta.upgradedToRecurringIncome = true;
+  }
+  // briefing content isn't user-edited — always pick up whatever this file version
+  // shipped with, so re-opening after Claude regenerates the file shows fresh stories
+  if(!s.briefing || s.briefing.updated !== seedBriefing().updated){
+    s.briefing = seedBriefing();
+  }
+  // one-time: fill in the new training/diet preference fields added to the Health
+  // profile (equipment, dietary restrictions, injuries, meal prep style) without
+  // touching any stats you'd already entered (weight, height, age, etc.)
+  if(!s.meta.addedHealthPreferences){
+    s.health.profile = Object.assign({equipment:'mix', dietary:'none', dietaryNote:'', injuries:'', mealPrep:'quick'}, s.health.profile);
+    s.meta.addedHealthPreferences = true;
+  }
   return s;
 }
 function save(){
@@ -764,6 +2452,8 @@ document.querySelectorAll('.tab-btn').forEach(btn=>{
     if(btn.dataset.tab==='finance') renderFinance();
     if(btn.dataset.tab==='health') renderHealth();
     if(btn.dataset.tab==='tasks') renderTasks();
+    if(btn.dataset.tab==='plan') loadPlanFrame();
+    if(btn.dataset.tab==='briefing') renderBriefing();
   });
 });
 document.querySelectorAll('.subtab-btn').forEach(btn=>{
@@ -825,19 +2515,24 @@ function renderOverview(){
   const openTodos = t.todos.filter(x=>!x.done).length;
   const nextTodo = t.todos.filter(x=>!x.done).sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999'))[0];
   const coveredCount = t.curriculum.filter(c=>c.covered).length;
+  const briefCount = state.briefing ? (state.briefing.ukPolitics.length + state.briefing.aiNews.length) : 0;
 
   const cards = [
-    {tab:'finance', icon:'£', title:'Finance', big:fmtGBP(nw), sub: f.netWorthHistory.length ? (nwDelta>=0?'▲ ':'▼ ')+fmtGBP(Math.abs(nwDelta))+' since last log' : 'No net worth logged yet'},
-    {tab:'health', icon:'♥', title:'Health', big: lastWeigh ? lastWeigh.weight+' kg' : '—', sub: lastWeigh ? 'Last weigh-in '+lastWeigh.date : 'No weigh-ins logged yet'},
-    {tab:'tasks', icon:'✓', title:'Tasks', big: openTodos+' open', sub: nextTodo ? 'Next: '+nextTodo.title : 'Nothing on your list'},
-    {tab:'tasks', icon:'AI', title:'AI Learning', big: coveredCount+'/'+t.curriculum.length, sub:'topics covered'}
+    {tab:'finance', icon:'£', accent:'var(--orange)', title:'Finance', big:fmtGBP(nw), sub: f.netWorthHistory.length ? (nwDelta>=0?'▲ ':'▼ ')+fmtGBP(Math.abs(nwDelta))+' since last log' : 'No net worth logged yet'},
+    {tab:'health', icon:'♥', accent:'var(--c5)', title:'Health', big: lastWeigh ? lastWeigh.weight+' kg' : '—', sub: lastWeigh ? 'Last weigh-in '+lastWeigh.date : 'No weigh-ins logged yet'},
+    {tab:'tasks', icon:'✓', accent:'var(--c1)', title:'Tasks', big: openTodos+' open', sub: nextTodo ? 'Next: '+nextTodo.title : 'Nothing on your list'},
+    {tab:'tasks', icon:'AI', accent:'var(--c7)', title:'AI Learning', big: coveredCount+'/'+t.curriculum.length, sub:'topics covered'},
+    {tab:'briefing', icon:'📰', accent:'var(--c3)', title:'Briefing', big: briefCount+' stories', sub: state.briefing ? 'Updated '+state.briefing.updated : 'Not generated yet'}
   ];
-  document.getElementById('overviewGrid').innerHTML = cards.map(c=>`
-    <div class="ov-card" data-goto="${c.tab}">
-      <div class="ov-icon">${c.icon}</div>
-      <div class="ov-title">${c.title}</div>
-      <div class="ov-big">${c.big}</div>
-      <div class="ov-sub">${c.sub}</div>
+  document.getElementById('overviewGrid').innerHTML = cards.map((c,i)=>`
+    <div class="ov-slot" data-pos="${i+1}">
+      <div class="ov-card" data-goto="${c.tab}" style="--accent:${c.accent}">
+        <div class="ov-icon-badge">${c.icon}</div>
+        <div class="ov-title">${c.title}</div>
+        <div class="ov-big">${c.big}</div>
+        <div class="ov-sub">${c.sub}</div>
+        <div class="ov-arrow">→</div>
+      </div>
     </div>`).join('');
   document.querySelectorAll('.ov-card').forEach(card=>{
     card.addEventListener('click', ()=>{
@@ -1075,12 +2770,21 @@ document.getElementById('expenseForm').addEventListener('submit', e=>{
   state.finance.expenses.push({name, amount, category:document.getElementById('expCategory').value});
   save(); renderFinance(); e.target.reset();
 });
+document.getElementById('incomeForm').addEventListener('submit', e=>{
+  e.preventDefault();
+  const name = document.getElementById('incName').value;
+  const amount = parseFloat(document.getElementById('incAmount').value);
+  if(!name || !amount) return;
+  state.finance.income.push({name, amount, category:document.getElementById('incCategory').value});
+  save(); renderFinance(); e.target.reset();
+});
 
 function delTxn(i){ state.finance.transactions.splice(i,1); save(); renderFinance(); }
 function delInvest(i){ state.finance.investments.splice(i,1); save(); renderFinance(); }
 function delDebt(i){ state.finance.debts.splice(i,1); save(); renderFinance(); }
 function delExpense(i){ state.finance.expenses.splice(i,1); save(); renderFinance(); }
-window.delTxn = delTxn; window.delInvest = delInvest; window.delDebt = delDebt; window.delExpense = delExpense;
+function delIncome(i){ state.finance.income.splice(i,1); save(); renderFinance(); }
+window.delTxn = delTxn; window.delInvest = delInvest; window.delDebt = delDebt; window.delExpense = delExpense; window.delIncome = delIncome;
 
 function monthKey(d){ return d.slice(0,7); }
 
@@ -1092,7 +2796,10 @@ function renderFinance(){
   const nw = f.netWorthHistory.length ? f.netWorthHistory[f.netWorthHistory.length-1].amount : calcNw;
   const thisMonth = new Date().toISOString().slice(0,7);
   const monthTxns = f.transactions.filter(t=>monthKey(t.date)===thisMonth);
-  const income = monthTxns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  // income = fixed recurring Income (salary, rent — always counted) + any one-off income transactions logged this month
+  const incomeTotal = f.income.reduce((s,i)=>s+i.amount,0);
+  const adhocIncomeThisMonth = monthTxns.filter(t=>t.type==='income').reduce((s,t)=>s+t.amount,0);
+  const income = incomeTotal + adhocIncomeThisMonth;
   // outgoings = fixed recurring Expenses + recurring investment contributions + any one-off expense transactions logged this month
   const expensesTotal = f.expenses.reduce((s,e)=>s+e.amount,0);
   const investMonthlyTotal = f.investments.reduce((s,i)=>s+(i.monthly||0),0);
@@ -1123,19 +2830,12 @@ function renderFinance(){
   const dtbody = document.querySelector('#debtTable tbody');
   dtbody.innerHTML = f.debts.length ? f.debts.map((d,i)=>`<tr><td>${d.name}</td><td>${fmtGBP(d.amount)}</td><td>${d.note||''}</td><td><button class="mini-del" onclick="delDebt(${i})">✕</button></td></tr>`).join('') : `<tr><td colspan="4" class="empty-note">No debts logged — nice.</td></tr>`;
 
-  // net worth chart
-  lineChart('chartNetWorth', {
-    labels: f.netWorthHistory.map(n=>n.date.slice(5)),
-    data: f.netWorthHistory.map(n=>n.amount),
-    color:'#ff7a1a'
-  });
-
   // income vs outgoings (last 6 months). Outgoings = the fixed recurring
   // budget (Expenses + investment standing orders) applied to every month,
   // plus any one-off expense transactions actually logged in that month.
   const months=[];
   for(let i=5;i>=0;i--){ const d=new Date(); d.setMonth(d.getMonth()-i); months.push(d.toISOString().slice(0,7)); }
-  const incByMonth = months.map(m=>f.transactions.filter(t=>t.type==='income'&&monthKey(t.date)===m).reduce((s,t)=>s+t.amount,0));
+  const incByMonth = months.map(m=>incomeTotal + f.transactions.filter(t=>t.type==='income'&&monthKey(t.date)===m).reduce((s,t)=>s+t.amount,0));
   const fixedRecurring = expensesTotal + investMonthlyTotal;
   const expByMonth = months.map(m=>fixedRecurring + f.transactions.filter(t=>t.type==='expense'&&monthKey(t.date)===m).reduce((s,t)=>s+t.amount,0));
   barChart('chartIncomeOut', {
@@ -1161,6 +2861,15 @@ function renderFinance(){
   donutChart('chartExpenseAlloc', {
     labels: f.expenses.map(e=>e.name),
     data: f.expenses.map(e=>e.amount),
+    colors: allocColors
+  });
+
+  // income table + allocation donut (mirrors the Expenses card layout)
+  const inctbody = document.querySelector('#incomeTable tbody');
+  inctbody.innerHTML = f.income.length ? f.income.map((inc,i)=>`<tr><td>${inc.name}${inc.note?'<div class="todo-meta">'+inc.note+'</div>':''}</td><td>${inc.category}</td><td>${fmtGBP(inc.amount)}/mo</td><td><button class="mini-del" onclick="delIncome(${i})">✕</button></td></tr>`).join('') : `<tr><td colspan="4" class="empty-note">No income logged yet.</td></tr>`;
+  donutChart('chartIncomeAlloc', {
+    labels: f.income.map(i=>i.name),
+    data: f.income.map(i=>i.amount),
     colors: allocColors
   });
 
@@ -1208,6 +2917,11 @@ function loadProfileForm(){
   document.getElementById('pTarget').value = p.target;
   document.getElementById('pActivity').value = p.activity;
   document.getElementById('pDays').value = p.days;
+  document.getElementById('pEquipment').value = p.equipment || 'mix';
+  document.getElementById('pDietary').value = p.dietary || 'none';
+  document.getElementById('pDietaryNote').value = p.dietaryNote || '';
+  document.getElementById('pInjuries').value = p.injuries || '';
+  document.getElementById('pMealPrep').value = p.mealPrep || 'quick';
 }
 
 document.getElementById('profileForm').addEventListener('submit', e=>{
@@ -1219,7 +2933,12 @@ document.getElementById('profileForm').addEventListener('submit', e=>{
     weight:document.getElementById('pWeight').value,
     target:document.getElementById('pTarget').value,
     activity:document.getElementById('pActivity').value,
-    days:document.getElementById('pDays').value
+    days:document.getElementById('pDays').value,
+    equipment:document.getElementById('pEquipment').value,
+    dietary:document.getElementById('pDietary').value,
+    dietaryNote:document.getElementById('pDietaryNote').value,
+    injuries:document.getElementById('pInjuries').value,
+    mealPrep:document.getElementById('pMealPrep').value
   };
   state.health.profile = p;
   generatePlans();
@@ -1230,61 +2949,191 @@ function generatePlans(){
   const p = state.health.profile;
   const weight = parseFloat(p.weight), height = parseFloat(p.height), age = parseFloat(p.age), target = parseFloat(p.target);
   const days = parseInt(p.days)||4;
-  let calorieLabel='';
+  const isCutting = !(target && weight) || target < weight; // default to a weight-loss focus unless a target above current weight says otherwise
+  let target_cal = null;
   if(weight && height && age){
     const bmr = p.sex==='male'
       ? 10*weight + 6.25*height - 5*age + 5
       : 10*weight + 6.25*height - 5*age - 161;
     const maintenance = bmr * parseFloat(p.activity);
-    const target_cal = Math.round((target && target<weight) ? maintenance-500 : maintenance-250);
-    calorieLabel = `— ~${target_cal} kcal/day target`;
-    document.getElementById('calorieTargetLabel').textContent = calorieLabel;
-    state.health.dietPlan = buildDietPlan(target_cal);
+    target_cal = Math.round(maintenance - (target && target<weight ? 500 : 300));
+    document.getElementById('calorieTargetLabel').textContent = `— ~${target_cal} kcal/day target`;
+  } else {
+    document.getElementById('calorieTargetLabel').textContent = '— add weight, height & age above for your personal number';
   }
-  state.health.workoutPlan = buildWorkoutPlan(days, target && weight && target<weight);
+  state.health.dietPlan = buildMealPlan(target_cal, p.dietary, p.dietaryNote, p.mealPrep);
+  state.health.workoutPlan = buildWorkoutPlan(days, p.equipment, isCutting, p.injuries);
   renderHealth();
 }
 
-function buildWorkoutPlan(days, isCutting){
-  const splits = {
-    3:[
-      {name:'Day 1 — Full Body Strength', items:['Squat 4x8','Bench press 4x8','Bent-over row 4x8','Plank 3x45s','20 min incline walk']},
-      {name:'Day 2 — Cardio + Core', items:['30 min steady cardio (bike/row/jog)','Hanging knee raises 3x15','Russian twists 3x20','Mobility stretch 10 min']},
-      {name:'Day 3 — Full Body Strength', items:['Deadlift 4x6','Overhead press 4x8','Lat pulldown 4x10','Walking lunges 3x12/leg','20 min incline walk']}
-    ],
-    4:[
-      {name:'Day 1 — Upper Body', items:['Bench press 4x8','Row 4x8','Shoulder press 3x10','Bicep curl 3x12','Tricep pushdown 3x12']},
-      {name:'Day 2 — Lower Body', items:['Squat 4x8','Romanian deadlift 4x8','Leg press 3x12','Calf raise 3x15','15 min incline walk']},
-      {name:'Day 3 — Cardio + Core', items:['30 min steady cardio','Plank 3x45s','Hanging leg raise 3x12','Mobility 10 min']},
-      {name:'Day 4 — Full Body + Conditioning', items:['Deadlift 4x6','Pull-ups 4xAMRAP','Push press 3x10','15 min HIIT intervals']}
-    ],
-    5:[
-      {name:'Day 1 — Chest & Triceps', items:['Bench press 4x8','Incline DB press 3x10','Cable fly 3x12','Tricep dips 3x12']},
-      {name:'Day 2 — Back & Biceps', items:['Deadlift 4x6','Pull-ups 4xAMRAP','Row 4x10','Bicep curl 3x12']},
-      {name:'Day 3 — Legs', items:['Squat 4x8','Leg press 3x12','Hamstring curl 3x12','Calf raise 3x15']},
-      {name:'Day 4 — Cardio + Core', items:['30-40 min steady cardio','Plank circuit','Mobility 10 min']},
-      {name:'Day 5 — Shoulders + Conditioning', items:['Overhead press 4x8','Lateral raise 3x15','Face pulls 3x15','15 min HIIT']}
-    ],
-    6:[
-      {name:'Day 1 — Push', items:['Bench press 4x8','Overhead press 3x10','Tricep pushdown 3x12']},
-      {name:'Day 2 — Pull', items:['Deadlift 4x6','Row 4x10','Bicep curl 3x12']},
-      {name:'Day 3 — Legs', items:['Squat 4x8','Leg press 3x12','Calf raise 3x15']},
-      {name:'Day 4 — Cardio', items:['35-45 min steady cardio', 'Core circuit']},
-      {name:'Day 5 — Push/Pull Volume', items:['Incline press 3x12','Lat pulldown 3x12','Lateral raise 3x15']},
-      {name:'Day 6 — Conditioning', items:['20 min HIIT','Mobility & stretching 15 min']}
-    ]
-  };
-  return splits[days] || splits[4];
+/* ---- exercise pools by equipment, for a weight-loss-focused split ---- */
+const EXERCISE_POOLS = {
+  gym:{
+    push:['Bench press 4x10','Incline dumbbell press 3x12','Cable chest fly 3x15','Shoulder press machine 3x12'],
+    pull:['Lat pulldown 4x10','Seated cable row 4x10','Face pulls 3x15','Bicep curl 3x12'],
+    legs:['Leg press 4x10','Romanian deadlift 3x10','Leg curl machine 3x12','Walking lunges 3x12/leg'],
+    full:['Squat 4x8','Deadlift 3x6','Overhead press 3x10','Bent-over row 3x10']
+  },
+  home:{
+    push:['Dumbbell floor press 4x12','Pike push-ups 3x10','Dumbbell shoulder press 3x12','Chair tricep dips 3x15'],
+    pull:['Dumbbell bent-over rows 4x12','Resistance band pull-aparts 3x15','Renegade rows 3x10','Dumbbell bicep curl 3x12'],
+    legs:['Goblet squat 4x12','Dumbbell Romanian deadlift 3x12','Walking lunges 3x12/leg','Glute bridges 3x15'],
+    full:['Goblet squat 4x10','Dumbbell deadlift 3x10','Dumbbell shoulder press 3x10','Renegade row 3x10']
+  },
+  bodyweight:{
+    push:['Push-ups 4xAMRAP','Pike push-ups 3x10','Chair/bench dips 3x12','Diamond push-ups 3x8'],
+    pull:['Doorway or table inverted rows 4x12','Superman holds 3x30s','Towel bicep curls 3x15','Prone Y-raises 3x15'],
+    legs:['Bodyweight squats 4x20','Walking lunges 3x14/leg','Glute bridges 3x20','Wall sit 3x40s'],
+    full:['Burpees 4x12','Squat-to-press (bodyweight) 3x15','Mountain climbers 3x30s','Jump squats 3x12']
+  }
+};
+const CORE_EXERCISES = ['Plank 3x45s','Hanging knee raises 3x15','Russian twists 3x20','Bicycle crunches 3x20','Mountain climbers 3x30s'];
+const FAT_LOSS_FINISHERS = [
+  '12 min HIIT — 30s hard / 30s easy',
+  '15 min incline walk or bike (fat-burn pace)',
+  '10 min jump rope intervals',
+  '20 min steady cardio (jog/row/bike)',
+  '15 min brisk walk outdoors',
+  '10 min circuit: burpees, mountain climbers, jumping jacks'
+];
+const CARDIO_SESSIONS = ['25-30 min steady cardio (jog/row/bike/incline walk)','20-25 min mixed intervals (1 min hard / 2 min easy)','30 min brisk outdoor walk or run'];
+const DAY_TYPE_LABEL = {push:'Push',pull:'Pull',legs:'Legs',full:'Full Body',upper:'Upper Body',lower:'Lower Body',cardio:'Cardio & Core'};
+
+function poolFor(equipment, dayIndex){
+  if(equipment==='mix') return dayIndex%2===0 ? EXERCISE_POOLS.gym : EXERCISE_POOLS.home;
+  return EXERCISE_POOLS[equipment] || EXERCISE_POOLS.home;
+}
+function equipTag(equipment, dayIndex){
+  if(equipment==='mix') return dayIndex%2===0 ? ' (Gym)' : ' (Home)';
+  if(equipment==='bodyweight') return ' (Bodyweight)';
+  return '';
 }
 
-function buildDietPlan(cal){
-  const meals = [
-    {meal:'Breakfast', pct:0.25},
-    {meal:'Lunch', pct:0.30},
-    {meal:'Dinner', pct:0.30},
-    {meal:'Snacks', pct:0.15}
-  ];
-  return meals.map(m=>({meal:m.meal, kcal:Math.round(cal*m.pct)}));
+// weight-loss-focused splits: every strength day still ends in a short fat-burn
+// finisher, and dedicated cardio days use longer steady/interval sessions —
+// the whole plan is built around a calorie-burn goal, not pure muscle-building.
+function buildWorkoutPlan(days, equipment, isCutting, injuries){
+  equipment = equipment || 'mix';
+  const typesByDays = {
+    3:['full','cardio','full'],
+    4:['upper','lower','cardio','full'],
+    5:['push','pull','legs','cardio','full'],
+    6:['push','pull','legs','cardio','full','cardio']
+  };
+  const types = typesByDays[days] || typesByDays[4];
+  const plan = types.map((type, i)=>{
+    const pool = poolFor(equipment, i);
+    let items;
+    if(type==='cardio'){
+      items = [CARDIO_SESSIONS[i % CARDIO_SESSIONS.length], CORE_EXERCISES[i % CORE_EXERCISES.length], CORE_EXERCISES[(i+2) % CORE_EXERCISES.length]];
+    } else if(type==='upper'){
+      items = [...pool.push.slice(0,2), ...pool.pull.slice(0,2), FAT_LOSS_FINISHERS[i % FAT_LOSS_FINISHERS.length]];
+    } else if(type==='lower'){
+      items = [...pool.legs, FAT_LOSS_FINISHERS[i % FAT_LOSS_FINISHERS.length]];
+    } else {
+      items = [...pool[type], FAT_LOSS_FINISHERS[i % FAT_LOSS_FINISHERS.length]];
+    }
+    const label = DAY_TYPE_LABEL[type] + (type==='cardio' ? '' : equipTag(equipment, i));
+    return {name:'Day '+(i+1)+' — '+label, items};
+  });
+  if(injuries && injuries.trim()){
+    plan.push({name:'⚠ Noted', items:['You flagged: "'+injuries.trim()+'" — swap out anything above that aggravates it (e.g. low-impact cardio instead of running/jumping, or ask me to rebuild a day around it).']});
+  }
+  return plan;
+}
+
+/* ---- quick, simple weight-loss-friendly meal bank ---- */
+const QUICK_MEALS = {
+  breakfast:[
+    {name:'Greek yogurt, mixed berries & honey with a handful of granola', kcal:380, veg:true},
+    {name:'3 scrambled eggs on wholemeal toast', kcal:420, veg:true},
+    {name:'Overnight oats with peanut butter & banana', kcal:400, veg:true},
+    {name:'Protein shake blended with banana & oats', kcal:350, veg:true},
+    {name:'2 poached eggs & avocado on wholemeal toast', kcal:430, veg:true},
+    {name:'Porridge with milk, berries & a scoop of protein powder', kcal:390, veg:true},
+    {name:'Smoked salmon & cream cheese on a wholemeal bagel thin', kcal:410, veg:false}
+  ],
+  lunch:[
+    {name:'Grilled chicken, rice & mixed veg (meal-prepped)', kcal:520, veg:false},
+    {name:'Tuna, sweetcorn & mixed bean salad with a wholemeal wrap', kcal:480, veg:false},
+    {name:'Turkey & salad sandwich on wholemeal bread + a piece of fruit', kcal:460, veg:false},
+    {name:'Chicken Caesar salad, light dressing', kcal:500, veg:false},
+    {name:"Last night's dinner, as leftovers", kcal:520, veg:true},
+    {name:'Falafel, hummus & salad wrap', kcal:490, veg:true},
+    {name:'Prawn & vegetable noodle stir-fry', kcal:510, veg:false}
+  ],
+  dinner:[
+    {name:'Grilled chicken breast, sweet potato & broccoli', kcal:560, veg:false},
+    {name:'Turkey chilli with rice', kcal:580, veg:false},
+    {name:'Baked salmon, new potatoes & green beans', kcal:600, veg:false},
+    {name:'Lean beef stir-fry with noodles & veg', kcal:590, veg:false},
+    {name:'Prawn & vegetable stir-fry with brown rice', kcal:540, veg:false},
+    {name:'Chicken fajitas — wraps, peppers, onion, light cheese', kcal:570, veg:false},
+    {name:'Lean mince cottage pie with extra veg', kcal:600, veg:false}
+  ],
+  snacks:[
+    {name:'Greek yogurt with a handful of berries', kcal:130},
+    {name:'Protein bar', kcal:180},
+    {name:'Apple with a tablespoon of peanut butter', kcal:170},
+    {name:'Small handful of almonds', kcal:160},
+    {name:'Rice cakes with cottage cheese', kcal:140},
+    {name:'2 boiled eggs', kcal:150},
+    {name:'Protein shake', kcal:150}
+  ]
+};
+const DAY_NAMES = ['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+
+function pickPool(list, vegOnly){
+  const filtered = vegOnly ? list.filter(x=>x.veg) : list;
+  return filtered.length ? filtered : list;
+}
+
+// builds a real 7-day meal plan (not just a calorie split) — quick, repeatable
+// meals by design since that's what fits a busy schedule best. Snack count
+// flexes to land close to the calorie target once one is known.
+function buildMealPlan(targetCal, dietary, dietaryNote, mealPrepStyle){
+  const vegOnly = dietary === 'vegetarian';
+  const bfPool = pickPool(QUICK_MEALS.breakfast, vegOnly);
+  const luPool = pickPool(QUICK_MEALS.lunch, vegOnly);
+  const diPool = pickPool(QUICK_MEALS.dinner, vegOnly);
+  const snPool = QUICK_MEALS.snacks;
+
+  const days = DAY_NAMES.map((day, i)=>{
+    const b = bfPool[i % bfPool.length];
+    const l = luPool[i % luPool.length];
+    const d = diPool[i % diPool.length];
+    const baseTotal = b.kcal + l.kcal + d.kcal;
+    // scale portion sizes to the target (reserving ~150kcal headroom for a snack)
+    // rather than just piling on extra snacks — bigger/smaller portions is how
+    // real calorie targets are actually hit, clamped so it never gets silly.
+    let scale = 1;
+    if(targetCal){
+      scale = (targetCal - 150) / baseTotal;
+      scale = Math.max(0.75, Math.min(1.6, scale));
+    }
+    const portionNote = scale>=1.15 ? ' (extra portion)' : scale<=0.88 ? ' (smaller portion)' : '';
+    const bK = Math.round((b.kcal*scale)/10)*10, lK = Math.round((l.kcal*scale)/10)*10, dK = Math.round((d.kcal*scale)/10)*10;
+    const meals = [
+      {slot:'Breakfast', name:b.name+portionNote, kcal:bK},
+      {slot:'Lunch', name:l.name+portionNote, kcal:lK},
+      {slot:'Dinner', name:d.name+portionNote, kcal:dK}
+    ];
+    let total = bK + lK + dK;
+    const maxSnacks = targetCal ? 2 : 1;
+    let snackIdx = i;
+    let guard = 0;
+    while((!targetCal || total < targetCal - 60) && meals.length - 3 < maxSnacks && guard < 5){
+      const s = snPool[snackIdx % snPool.length];
+      if(targetCal && total + s.kcal > targetCal + 90) break;
+      meals.push({slot:'Snack', name:s.name, kcal:s.kcal});
+      total += s.kcal;
+      snackIdx++; guard++;
+      if(!targetCal) break;
+    }
+    return {day, meals, total};
+  });
+
+  return {days, targetCal, dietary, dietaryNote, mealPrepStyle};
 }
 
 function renderHealth(){
@@ -1294,10 +3143,22 @@ function renderHealth(){
   `).join('') : `<div class="empty-note">Fill in your profile above and generate a plan.</div>`;
 
   const dp = state.health.dietPlan;
-  document.getElementById('dietPlanBox').innerHTML = dp ? `
-    <div class="plan-day"><div class="d-name">Daily target split</div><ul>${dp.map(m=>`<li>${m.meal}: ~${m.kcal} kcal</li>`).join('')}</ul></div>
-    <div class="empty-note" style="margin-top:6px;">Prioritise protein at every meal, veg with lunch &amp; dinner, and water over sugary drinks. Adjust portions week to week based on your weigh-in trend.</div>
-  ` : `<div class="empty-note">Fill in your profile above and generate a plan.</div>`;
+  if(dp && dp.days){
+    const noteBits = [];
+    if(dp.dietary==='allergy' || dp.dietary==='other'){
+      noteBits.push(`<div class="empty-note" style="color:var(--warning);">⚠ You flagged: "${dp.dietaryNote||dp.dietary}" — double-check every meal below fits before following it; this plan doesn't auto-filter allergies.</div>`);
+    }
+    if(dp.mealPrepStyle==='elaborate'){
+      noteBits.push(`<div class="empty-note">You said you're happy to cook properly — these are still the quick base options; ask me any time to swap a day for something more involved.</div>`);
+    }
+    document.getElementById('dietPlanBox').innerHTML = dp.days.map(d=>`
+      <div class="plan-day"><div class="d-name">${d.day} <span style="font-weight:400;color:var(--text-muted);">— ~${d.total} kcal</span></div>
+        <ul>${d.meals.map(m=>`<li><b>${m.slot}:</b> ${m.name} <span style="color:var(--text-muted);">(~${m.kcal} kcal)</span></li>`).join('')}</ul>
+      </div>`).join('') + noteBits.join('') +
+      `<div class="empty-note" style="margin-top:6px;">Meals repeat on a 7-day rotation for easy shopping/prep — swap anything you don't fancy for a similar item. Prioritise protein at every meal, veg with lunch &amp; dinner, water over sugary drinks.</div>`;
+  } else {
+    document.getElementById('dietPlanBox').innerHTML = `<div class="empty-note">Fill in your profile above and generate a plan.</div>`;
+  }
 
   // weigh table + chart
   const wtbody = document.querySelector('#weighTable tbody');
@@ -1485,6 +3346,29 @@ function renderLearning(){
   const labels = log.map(l=>l.date);
   const cum = log.map((_,i)=>i+1);
   lineChart('chartLearnProgress', { labels: labels.map(l=>l.slice(5)), data: cum, color:'#9085e9' });
+}
+
+/* ============================================================
+   BRIEFING
+   ============================================================ */
+function briefItemsHtml(items){
+  if(!items || !items.length) return `<div class="empty-note">Nothing significant today.</div>`;
+  return items.map((it,i)=>`
+    <div class="brief-item">
+      <div class="brief-num">${i+1}</div>
+      <div class="brief-body">
+        <p class="brief-title"><a href="${it.url}" target="_blank" rel="noopener">${it.title}</a></p>
+        <p class="brief-sentence">${it.sentence}</p>
+      </div>
+    </div>`).join('');
+}
+function renderBriefing(){
+  const b = state.briefing;
+  if(!b) return;
+  const d = new Date(b.updated+'T00:00:00');
+  document.getElementById('briefUpdated').textContent = 'Updated ' + d.toLocaleDateString('en-GB',{weekday:'long', day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('briefUkPolitics').innerHTML = briefItemsHtml(b.ukPolitics);
+  document.getElementById('briefAiNews').innerHTML = briefItemsHtml(b.aiNews);
 }
 
 /* ============================================================
