@@ -10,8 +10,9 @@
 <meta name="apple-mobile-web-app-title" content="Life OS">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#05060a">
-<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2305060a'/%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%23ff7a1a' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='16' fill='%23ff7a1a'/%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' fill='%2305060a'/%3E%3Ccircle cx='50' cy='50' r='34' fill='none' stroke='%23ff7a1a' stroke-width='4'/%3E%3Ccircle cx='50' cy='50' r='16' fill='%23ff7a1a'/%3E%3C/svg%3E">
+<link rel="manifest" href="./manifest.json">
 <style>
 :root{
   --bg:#05060a;
@@ -774,6 +775,10 @@ table.data-table tr:hover td{background:rgba(255,122,26,0.04);}
 </main>
 
 <script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load', () => navigator.serviceWorker.register('./sw.js').catch(()=>{}));
+}
+
 /* ============================================================
    5-YEAR PLAN — embedded verbatim in an iframe, own tab, own state.
    Kept as a template literal (not innerHTML) so its markup, CSS and JS
