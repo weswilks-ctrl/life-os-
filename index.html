@@ -197,6 +197,10 @@ main{max-width:1180px; margin:0 auto; padding:22px 18px calc(60px + env(safe-are
 .ov-card .ov-title{font-size:12px; letter-spacing:1.5px; text-transform:uppercase; color:var(--text-muted); font-weight:700;}
 .ov-card .ov-big{font-size:24px; font-weight:800; margin-top:7px;}
 .ov-card .ov-sub{font-size:12.5px; color:var(--text-secondary); margin-top:4px;}
+.ov-card .ov-sub2{font-size:11.5px; color:var(--text-muted); margin-top:2px;}
+.ov-card .ov-sub2.up{color:var(--c6);}
+.ov-card .ov-sub2.down{color:var(--critical);}
+.ov-card .ov-sub2.warn{color:var(--warning);}
 .ov-card .ov-arrow{position:absolute; right:14px; bottom:10px; font-size:13px; color:var(--text-muted); opacity:.5; transition:.15s;}
 .ov-card:hover .ov-arrow{opacity:1; color:var(--orange-bright); transform:translateX(2px);}
 
@@ -293,6 +297,10 @@ table.data-table th{
 }
 table.data-table td{padding:8px; border-bottom:1px solid rgba(255,255,255,0.04); color:var(--text-secondary);}
 table.data-table tr:hover td{background:rgba(255,122,26,0.04);}
+table.data-table [contenteditable="true"]{cursor:text; border-radius:4px;}
+table.data-table [contenteditable="true"]:hover{outline:1px dashed var(--border-orange); outline-offset:-1px;}
+table.data-table [contenteditable="true"]:focus{outline:1px solid var(--orange); outline-offset:-1px; background:var(--orange-dim); color:var(--text);}
+table.data-table span[contenteditable="true"]{padding:1px 3px; margin:-1px -3px; border-radius:3px;}
 .tag{display:inline-block; padding:2px 8px; border-radius:999px; font-size:10.5px; font-weight:700; letter-spacing:.3px;}
 .tag.orange{background:rgba(255,122,26,0.14); color:var(--orange-bright);}
 .tag.blue{background:rgba(57,135,229,0.14); color:#7fb0ee;}
@@ -497,7 +505,7 @@ details.plan-year-card summary::-webkit-details-marker{display:none;}
           <button type="submit" class="btn">Add</button>
         </form>
         <div class="chart-box"><div id="chartIncomeAlloc" class="svg-chart"></div></div>
-        <table class="data-table" id="incomeTable"><thead><tr><th>Name</th><th>Category</th><th>Monthly</th><th></th></tr></thead><tbody></tbody></table>
+        <table class="data-table" id="incomeTable" data-arr="finance.income" data-rerender="renderFinance"><thead><tr><th>Name</th><th>Category</th><th>Monthly</th><th></th></tr></thead><tbody></tbody></table>
       </div>
       <div class="card">
         <h3>Expenses <span class="sm">— monthly recurring costs</span></h3>
@@ -510,7 +518,7 @@ details.plan-year-card summary::-webkit-details-marker{display:none;}
           <button type="submit" class="btn">Add</button>
         </form>
         <div class="chart-box"><div id="chartExpenseAlloc" class="svg-chart"></div></div>
-        <table class="data-table" id="expenseTable"><thead><tr><th>Name</th><th>Category</th><th>Monthly</th><th></th></tr></thead><tbody></tbody></table>
+        <table class="data-table" id="expenseTable" data-arr="finance.expenses" data-rerender="renderFinance"><thead><tr><th>Name</th><th>Category</th><th>Monthly</th><th></th></tr></thead><tbody></tbody></table>
       </div>
     </div>
 
@@ -527,7 +535,7 @@ details.plan-year-card summary::-webkit-details-marker{display:none;}
           <button type="submit" class="btn">Add</button>
         </form>
         <div class="chart-box"><div id="chartAllocation" class="svg-chart"></div></div>
-        <table class="data-table" id="investTable"><thead><tr><th>Name</th><th>Type</th><th>Value</th><th>Monthly</th><th></th></tr></thead><tbody></tbody></table>
+        <table class="data-table" id="investTable" data-arr="finance.investments" data-rerender="renderFinance"><thead><tr><th>Name</th><th>Type</th><th>Value</th><th>Monthly</th><th></th></tr></thead><tbody></tbody></table>
       </div>
       <div class="card">
         <h3>Debts &amp; Liabilities</h3>
@@ -537,7 +545,7 @@ details.plan-year-card summary::-webkit-details-marker{display:none;}
           <div class="field grow"><label>Note</label><input id="debtNote" placeholder="optional"></div>
           <button type="submit" class="btn ghost">Add debt</button>
         </form>
-        <table class="data-table" id="debtTable"><thead><tr><th>Name</th><th>Amount</th><th>Note</th><th></th></tr></thead><tbody></tbody></table>
+        <table class="data-table" id="debtTable" data-arr="finance.debts" data-rerender="renderFinance"><thead><tr><th>Name</th><th>Amount</th><th>Note</th><th></th></tr></thead><tbody></tbody></table>
       </div>
     </div>
 
@@ -562,12 +570,12 @@ details.plan-year-card summary::-webkit-details-marker{display:none;}
         <button type="submit" class="btn ghost">Log net worth</button>
         <button type="button" class="btn ghost" id="useCalcBtn">Use calculated total</button>
       </form>
-      <table class="data-table" id="txnTable"><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th>Amount</th><th></th></tr></thead><tbody></tbody></table>
+      <table class="data-table" id="txnTable" data-arr="finance.transactions" data-rerender="renderFinance"><thead><tr><th>Date</th><th>Type</th><th>Category</th><th>Description</th><th>Amount</th><th></th></tr></thead><tbody></tbody></table>
     </div>
 
-    <div class="card">
-      <h3>Market Watch <span class="sm">— sample data, edit anytime</span></h3>
-      <div class="note-box"><b>Note:</b> these are illustrative starter values, not a live feed. Click "Edit" on any chart below to paste in your own figures — a live price feed can be wired in once you're happy with the layout.</div>
+    <details class="card">
+      <summary style="cursor:pointer; list-style:none;"><h3 style="display:inline;">Market Watch <span class="sm">— sample data, edit anytime</span></h3></summary>
+      <div class="note-box" style="margin-top:12px;"><b>Note:</b> these are illustrative starter values, not a live feed. Click "Edit" on any chart below to paste in your own figures — a live price feed can be wired in once you're happy with the layout.</div>
       <div class="grid3" id="stockCharts">
         <div>
           <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;">
@@ -594,7 +602,7 @@ details.plan-year-card summary::-webkit-details-marker{display:none;}
           <div id="figVGProp" style="text-align:center;font-size:13px;font-weight:800;margin-top:6px;"></div>
         </div>
       </div>
-    </div>
+    </details>
   </section>
 
   <!-- ============ HEALTH ============ -->
@@ -672,7 +680,7 @@ details.plan-year-card summary::-webkit-details-marker{display:none;}
           <button type="submit" class="btn">Log weigh-in</button>
         </form>
         <div class="chart-box tall"><div id="chartWeight" class="svg-chart"></div></div>
-        <table class="data-table" id="weighTable"><thead><tr><th>Date</th><th>Weight</th><th>Notes</th><th></th></tr></thead><tbody></tbody></table>
+        <table class="data-table" id="weighTable" data-arr="health.weighIns" data-rerender="renderHealth"><thead><tr><th>Date</th><th>Weight</th><th>Notes</th><th></th></tr></thead><tbody></tbody></table>
       </div>
     </div>
 
@@ -1356,18 +1364,37 @@ function renderOverview(){
   const nw = f.netWorthHistory.length ? f.netWorthHistory[f.netWorthHistory.length-1].amount : calcNw;
   const nwPrev = f.netWorthHistory.length>1 ? f.netWorthHistory[f.netWorthHistory.length-2].amount : nw;
   const nwDelta = nw-nwPrev;
+  const monthlyIncome = f.income.reduce((s,i)=>s+i.amount,0);
+  const monthlyOutgoings = f.expenses.reduce((s,e)=>s+e.amount,0) + f.investments.reduce((s,i)=>s+(i.monthly||0),0);
+  const monthlyNet = monthlyIncome - monthlyOutgoings;
   const lastWeigh = h.weighIns.length ? h.weighIns[h.weighIns.length-1] : null;
+  const prevWeigh = h.weighIns.length>1 ? h.weighIns[h.weighIns.length-2] : null;
+  const weighDelta = (lastWeigh && prevWeigh) ? +(lastWeigh.weight - prevWeigh.weight).toFixed(1) : null;
   const openTodos = t.todos.filter(x=>!x.done).length;
+  const today = new Date().toISOString().slice(0,10);
+  const overdueTodos = t.todos.filter(x=>!x.done && x.date && x.date<today).length;
   const nextTodo = t.todos.filter(x=>!x.done).sort((a,b)=>(a.date||'9999').localeCompare(b.date||'9999'))[0];
   const coveredCount = t.curriculum.filter(c=>c.covered).length;
+  const lastLearningLog = t.learningLog.length ? t.learningLog.slice().sort((a,b)=>a.date.localeCompare(b.date)).pop() : null;
   const briefCount = state.briefing ? (state.briefing.ukPolitics.length + state.briefing.aiNews.length) : 0;
+  const topHeadline = state.briefing && state.briefing.ukPolitics.length ? state.briefing.ukPolitics[0].title : null;
 
   const cards = [
-    {tab:'finance', icon:'£', accent:'var(--orange)', title:'Finance', big:fmtGBP(nw), sub: f.netWorthHistory.length ? (nwDelta>=0?'▲ ':'▼ ')+fmtGBP(Math.abs(nwDelta))+' since last log' : 'No net worth logged yet'},
-    {tab:'health', icon:'♥', accent:'var(--c5)', title:'Health', big: lastWeigh ? lastWeigh.weight+' kg' : '—', sub: lastWeigh ? 'Last weigh-in '+lastWeigh.date : 'No weigh-ins logged yet'},
-    {tab:'tasks', icon:'✓', accent:'var(--c1)', title:'Tasks', big: openTodos+' open', sub: nextTodo ? 'Next: '+nextTodo.title : 'Nothing on your list'},
-    {tab:'tasks', icon:'AI', accent:'var(--c7)', title:'AI Learning', big: coveredCount+'/'+t.curriculum.length, sub:'topics covered'},
-    {tab:'briefing', icon:'📰', accent:'var(--c3)', title:'Briefing', big: briefCount+' stories', sub: state.briefing ? 'Updated '+state.briefing.updated : 'Not generated yet'}
+    {tab:'finance', icon:'£', accent:'var(--orange)', title:'Finance', big:fmtGBP(nw),
+      sub: f.netWorthHistory.length ? (nwDelta>=0?'▲ ':'▼ ')+fmtGBP(Math.abs(nwDelta))+' since last log' : 'No net worth logged yet',
+      sub2: (monthlyNet>=0?'+':'-')+fmtGBP(Math.abs(monthlyNet))+'/mo net', sub2Class: monthlyNet>=0?'up':'down'},
+    {tab:'health', icon:'♥', accent:'var(--c5)', title:'Health', big: lastWeigh ? lastWeigh.weight+' kg' : '—',
+      sub: lastWeigh ? 'Last weigh-in '+lastWeigh.date : 'No weigh-ins logged yet',
+      sub2: weighDelta===null ? '' : (weighDelta===0?'→ no change':(weighDelta>0?'▲ +':'▼ ')+Math.abs(weighDelta)+' kg vs last'), sub2Class: ''},
+    {tab:'tasks', icon:'✓', accent:'var(--c1)', title:'Tasks', big: openTodos+' open',
+      sub: nextTodo ? 'Next: '+nextTodo.title : 'Nothing on your list',
+      sub2: overdueTodos ? overdueTodos+' overdue' : (openTodos ? 'All on track' : ''), sub2Class: overdueTodos?'warn':'up'},
+    {tab:'tasks', icon:'AI', accent:'var(--c7)', title:'AI Learning', big: coveredCount+'/'+t.curriculum.length,
+      sub:'topics covered',
+      sub2: lastLearningLog ? 'Last logged '+lastLearningLog.date : 'No topics logged yet', sub2Class:''},
+    {tab:'briefing', icon:'📰', accent:'var(--c3)', title:'Briefing', big: briefCount+' stories',
+      sub: state.briefing ? 'Updated '+state.briefing.updated : 'Not generated yet',
+      sub2: topHeadline ? topHeadline.slice(0,60)+(topHeadline.length>60?'…':'') : '', sub2Class:''}
   ];
   document.getElementById('overviewGrid').innerHTML = cards.map((c,i)=>`
     <div class="ov-slot" data-pos="${i+1}">
@@ -1376,6 +1403,7 @@ function renderOverview(){
         <div class="ov-title">${c.title}</div>
         <div class="ov-big">${c.big}</div>
         <div class="ov-sub">${c.sub}</div>
+        ${c.sub2 ? `<div class="ov-sub2 ${c.sub2Class||''}">${c.sub2}</div>` : ''}
         <div class="ov-arrow">→</div>
       </div>
     </div>`).join('');
@@ -1679,6 +1707,43 @@ window.delTxn = delTxn; window.delInvest = delInvest; window.delDebt = delDebt; 
 
 function monthKey(d){ return d.slice(0,7); }
 
+/* ============================================================
+   CLICK-TO-EDIT — shared across every data table. A table opts in by
+   setting data-arr="stateKey.arrayKey" and data-rerender="renderX" on
+   the <table>, and marking editable cells contenteditable="true"
+   data-field="propName" [data-type="number"] when rendering rows.
+   ============================================================ */
+function commitEditableCell(cell){
+  const table = cell.closest('table');
+  const tr = cell.closest('tr');
+  if(!table || !tr || !table.dataset.arr) return;
+  const idx = parseInt(tr.dataset.idx, 10);
+  const [stateKey, arrKey] = table.dataset.arr.split('.');
+  const arr = state[stateKey] && state[stateKey][arrKey];
+  const item = arr && arr[idx];
+  if(!item) return;
+  const field = cell.dataset.field;
+  const raw = cell.textContent.trim();
+  if(cell.dataset.type === 'number'){
+    const num = parseFloat(raw.replace(/[^0-9.\-]/g,''));
+    item[field] = isNaN(num) ? item[field] : num;
+  } else {
+    item[field] = raw === '' ? item[field] : raw;
+  }
+  save();
+  const fn = table.dataset.rerender && window[table.dataset.rerender];
+  if(typeof fn === 'function') fn();
+}
+document.addEventListener('focusout', e=>{
+  if(e.target.matches && e.target.matches('[contenteditable="true"][data-field]')) commitEditableCell(e.target);
+});
+document.addEventListener('keydown', e=>{
+  if(e.key==='Enter' && e.target.matches && e.target.matches('[contenteditable="true"][data-field]')){
+    e.preventDefault();
+    e.target.blur();
+  }
+});
+
 function renderFinance(){
   const f = state.finance;
   const investTotal = f.investments.reduce((s,i)=>s+i.value,0);
@@ -1710,16 +1775,16 @@ function renderFinance(){
   const tbody = document.querySelector('#txnTable tbody');
   tbody.innerHTML = f.transactions.length ? f.transactions.slice().reverse().map((t)=>{
     const realIdx = f.transactions.indexOf(t);
-    return `<tr><td>${t.date}</td><td><span class="tag ${t.type==='income'?'green':'red'}">${t.type}</span></td><td>${t.category}</td><td>${t.desc||''}</td><td>${t.type==='income'?'+':'-'}${fmtGBP(t.amount)}</td><td><button class="mini-del" onclick="delTxn(${realIdx})">✕</button></td></tr>`;
+    return `<tr data-idx="${realIdx}"><td>${t.date}</td><td><span class="tag ${t.type==='income'?'green':'red'}">${t.type}</span></td><td contenteditable="true" data-field="category">${t.category}</td><td contenteditable="true" data-field="desc">${t.desc||''}</td><td>${t.type==='income'?'+':'-'}${fmtGBP(t.amount)}</td><td><button class="mini-del" onclick="delTxn(${realIdx})">✕</button></td></tr>`;
   }).join('') : `<tr><td colspan="6" class="empty-note">No transactions yet — add your first one above.</td></tr>`;
 
   // investments table
   const itbody = document.querySelector('#investTable tbody');
-  itbody.innerHTML = f.investments.length ? f.investments.map((inv,i)=>`<tr><td>${inv.name}${inv.note?'<div class="todo-meta">'+inv.note+'</div>':''}</td><td>${inv.type}</td><td>${fmtGBP(inv.value)}</td><td>${inv.monthly?fmtGBP(inv.monthly)+'/mo':'—'}</td><td><button class="mini-del" onclick="delInvest(${i})">✕</button></td></tr>`).join('') : `<tr><td colspan="5" class="empty-note">No investments logged yet.</td></tr>`;
+  itbody.innerHTML = f.investments.length ? f.investments.map((inv,i)=>`<tr data-idx="${i}"><td><span contenteditable="true" data-field="name">${inv.name}</span>${inv.note?'<div class="todo-meta">'+inv.note+'</div>':''}</td><td>${inv.type}</td><td contenteditable="true" data-field="value" data-type="number">${fmtGBP(inv.value)}</td><td contenteditable="true" data-field="monthly" data-type="number">${inv.monthly?fmtGBP(inv.monthly)+'/mo':'—'}</td><td><button class="mini-del" onclick="delInvest(${i})">✕</button></td></tr>`).join('') : `<tr><td colspan="5" class="empty-note">No investments logged yet.</td></tr>`;
 
   // debts table
   const dtbody = document.querySelector('#debtTable tbody');
-  dtbody.innerHTML = f.debts.length ? f.debts.map((d,i)=>`<tr><td>${d.name}</td><td>${fmtGBP(d.amount)}</td><td>${d.note||''}</td><td><button class="mini-del" onclick="delDebt(${i})">✕</button></td></tr>`).join('') : `<tr><td colspan="4" class="empty-note">No debts logged — nice.</td></tr>`;
+  dtbody.innerHTML = f.debts.length ? f.debts.map((d,i)=>`<tr data-idx="${i}"><td contenteditable="true" data-field="name">${d.name}</td><td contenteditable="true" data-field="amount" data-type="number">${fmtGBP(d.amount)}</td><td contenteditable="true" data-field="note">${d.note||''}</td><td><button class="mini-del" onclick="delDebt(${i})">✕</button></td></tr>`).join('') : `<tr><td colspan="4" class="empty-note">No debts logged — nice.</td></tr>`;
 
   // income vs outgoings (last 6 months). Outgoings = the fixed recurring
   // budget (Expenses + investment standing orders) applied to every month,
@@ -1748,7 +1813,7 @@ function renderFinance(){
 
   // expenses table + allocation donut (mirrors the Investments card layout)
   const etbody = document.querySelector('#expenseTable tbody');
-  etbody.innerHTML = f.expenses.length ? f.expenses.map((exp,i)=>`<tr><td>${exp.name}${exp.note?'<div class="todo-meta">'+exp.note+'</div>':''}</td><td>${exp.category}</td><td>${fmtGBP(exp.amount)}/mo</td><td><button class="mini-del" onclick="delExpense(${i})">✕</button></td></tr>`).join('') : `<tr><td colspan="4" class="empty-note">No expenses logged yet.</td></tr>`;
+  etbody.innerHTML = f.expenses.length ? f.expenses.map((exp,i)=>`<tr data-idx="${i}"><td><span contenteditable="true" data-field="name">${exp.name}</span>${exp.note?'<div class="todo-meta">'+exp.note+'</div>':''}</td><td contenteditable="true" data-field="category">${exp.category}</td><td contenteditable="true" data-field="amount" data-type="number">${fmtGBP(exp.amount)}/mo</td><td><button class="mini-del" onclick="delExpense(${i})">✕</button></td></tr>`).join('') : `<tr><td colspan="4" class="empty-note">No expenses logged yet.</td></tr>`;
   donutChart('chartExpenseAlloc', {
     labels: f.expenses.map(e=>e.name),
     data: f.expenses.map(e=>e.amount),
@@ -1757,7 +1822,7 @@ function renderFinance(){
 
   // income table + allocation donut (mirrors the Expenses card layout)
   const inctbody = document.querySelector('#incomeTable tbody');
-  inctbody.innerHTML = f.income.length ? f.income.map((inc,i)=>`<tr><td>${inc.name}${inc.note?'<div class="todo-meta">'+inc.note+'</div>':''}</td><td>${inc.category}</td><td>${fmtGBP(inc.amount)}/mo</td><td><button class="mini-del" onclick="delIncome(${i})">✕</button></td></tr>`).join('') : `<tr><td colspan="4" class="empty-note">No income logged yet.</td></tr>`;
+  inctbody.innerHTML = f.income.length ? f.income.map((inc,i)=>`<tr data-idx="${i}"><td><span contenteditable="true" data-field="name">${inc.name}</span>${inc.note?'<div class="todo-meta">'+inc.note+'</div>':''}</td><td contenteditable="true" data-field="category">${inc.category}</td><td contenteditable="true" data-field="amount" data-type="number">${fmtGBP(inc.amount)}/mo</td><td><button class="mini-del" onclick="delIncome(${i})">✕</button></td></tr>`).join('') : `<tr><td colspan="4" class="empty-note">No income logged yet.</td></tr>`;
   donutChart('chartIncomeAlloc', {
     labels: f.income.map(i=>i.name),
     data: f.income.map(i=>i.amount),
@@ -2055,7 +2120,7 @@ function renderHealth(){
   const wtbody = document.querySelector('#weighTable tbody');
   wtbody.innerHTML = state.health.weighIns.length ? state.health.weighIns.slice().reverse().map(w=>{
     const idx = state.health.weighIns.indexOf(w);
-    return `<tr><td>${w.date}</td><td>${w.weight} kg</td><td>${w.notes||''}</td><td><button class="mini-del" onclick="delWeigh(${idx})">✕</button></td></tr>`;
+    return `<tr data-idx="${idx}"><td>${w.date}</td><td contenteditable="true" data-field="weight" data-type="number">${w.weight} kg</td><td contenteditable="true" data-field="notes">${w.notes||''}</td><td><button class="mini-del" onclick="delWeigh(${idx})">✕</button></td></tr>`;
   }).join('') : `<tr><td colspan="4" class="empty-note">No weigh-ins yet.</td></tr>`;
 
   lineChart('chartWeight', {
